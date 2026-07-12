@@ -1,0 +1,72 @@
+"""Application configuration.
+
+Settings are loaded from environment variables (and an optional ``.env`` file)
+using pydantic-settings. Defaults mirror the values already used by the
+ingestion pipeline (see ``backend/ingest.py``) so the auth service and the
+existing tooling talk to the same PostgreSQL instance.
+"""
+from functools import lru_cache
+from typing import List
+
+from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
+    # ── Application ──
+    PROJECT_NAME: str = "Graph Intelligence & Security Service"
+    API_V1_PREFIX: str = "/api/v1"
+    ENVIRONMENT: str = "development"
+
+    # ── Database ──
+    # Reuses the same variable name as the ingestion pipeline for consistency.
+    POSTGRES_URI: str = "postgresql://user:password@localhost:5432/crimerakshak"
+
+    # ── JWT / Auth ──
+    # SECRET_KEY MUST be overridden in production via the environment.
+    SECRET_KEY: str = "CHANGE_ME_IN_PRODUCTION_use_openssl_rand_hex_32"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    # Issued-at leeway (seconds) tolerated when validating tokens.
+    JWT_LEEWAY_SECONDS: int = 10
+
+    # ── Security policy ──
+    PASSWORD_MIN_LENGTH: int = 8
+    # Wrong-password attempts before an account is temporarily locked.
+    MAX_FAILED_LOGIN_ATTEMPTS: int = 5
+    ACCOUNT_LOCKOUT_MINUTES: int = 15
+
+    # ── CORS ──
+    # Comma-separated list in the environment, e.g. "http://localhost:3000".
+    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def _split_cors(cls, v):
+        if isinstance(v, str) and not v.startswith("["):
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v
+
+    @property
+    def sqlalchemy_database_uri(self) -> str:
+        """SQLAlchemy expects the ``postgresql+psycopg2`` driver prefix."""
+        uri = self.POSTGRES_URI
+        if uri.startswith("postgresql://"):
+            uri = uri.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return uri
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+
+
+settings = get_settings()
