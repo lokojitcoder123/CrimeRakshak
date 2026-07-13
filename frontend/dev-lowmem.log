@@ -81,3 +81,15 @@
  POST /api/chat 200 in 2.3s (next.js: 8ms, application-code: 2.3s)
  GET /ai-assistant 200 in 251ms (next.js: 132ms, application-code: 119ms)
  GET /api/chat/cb4b1531-9191-455b-a163-771da33ddc85/pdf 200 in 2.7s (next.js: 2.1s, application-code: 551ms)
+ POST /api/chat 200 in 3.9s (next.js: 30ms, application-code: 3.9s)
+ POST /api/chat 200 in 2.1s (next.js: 8ms, application-code: 2.1s)
+ POST /api/chat 200 in 4.1s (next.js: 7ms, application-code: 4.1s)
+○ Compiling /ai-prediction ...
+ GET /ai-prediction 200 in 10.1s (next.js: 9.9s, application-code: 161ms)
+ GET /ai-prediction 200 in 108ms (next.js: 10ms, application-code: 97ms)
+ GET /ai-assistant 200 in 134ms (next.js: 42ms, application-code: 92ms)
+○ Compiling /alerts ...
+ GET /alerts 200 in 5.4s (next.js: 5.3s, application-code: 146ms)
+ GET /alerts 200 in 86ms (next.js: 8ms, application-code: 78ms)
+ GET /ai-assistant 200 in 102ms (next.js: 40ms, application-code: 61ms)
+ POST /api/chat 200 in 5.9s (next.js: 1889ms, application-code: 4.0s)
