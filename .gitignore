@@ -1,1 +1,6 @@
 
+
+.env
+
+# DuckDB build artifact (rebuild via python -m app.chat.data.loader)
+*.duckdb

@@ -1,0 +1,120 @@
+"""The conversational agent: an OpenRouter tool-calling loop.
+
+Flow per user turn:
+  1. system prompt (role + schema card + grounding rules) + prior history + the
+     new user message are sent to the agent model with the tool specs.
+  2. If the model calls a tool, we execute it via :func:`dispatch_tool`, append
+     the tool result, and loop — up to ``MAX_TOOL_ROUNDS`` times.
+  3. When the model returns prose, that's the answer. Collected tool provenance
+     is returned as ``sources`` (Block 9 explainability).
+
+Conversation memory is *stateless here*: the caller passes recent history and
+receives the new turns back to persist. Postgres persistence is layered on in
+the router.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+from app.chat.llm import chat_completion
+from app.chat.tools import TOOL_SPECS, dispatch_tool, get_schema_card
+from app.core.config import settings
+from app.core.logging import get_logger
+
+logger = get_logger("chat.agent")
+
+MAX_TOOL_ROUNDS = 5
+
+SYSTEM_PROMPT = """You are CrimeRakshak, an assistant for Karnataka State \
+Police investigators, analysts and supervisors. You answer questions about \
+crime using ONLY grounded data returned by your tools — never invent numbers.
+
+To answer questions about crime statistics, call `query_crime_stats` with a \
+DuckDB SQL query built from the schema below. Then summarise the results in \
+clear, concise prose. When you cite figures, they must come from tool results.
+
+If the data cannot answer the question, say so plainly. Remember these are \
+AGGREGATE reported-case counts, not individual case records — do not claim to \
+know about specific FIRs, victims or accused from these tables.
+
+=== DATABASE SCHEMA ===
+{schema_card}
+"""
+
+
+@dataclass
+class AgentTurn:
+    answer: str
+    sources: list[str] = field(default_factory=list)
+    # New messages produced this turn (assistant + tool msgs) for persistence.
+    new_messages: list[dict] = field(default_factory=list)
+    tool_calls: int = 0
+
+
+def _system_message() -> dict:
+    return {"role": "system", "content": SYSTEM_PROMPT.format(schema_card=get_schema_card())}
+
+
+def run_agent(user_message: str, history: list[dict] | None = None) -> AgentTurn:
+    """Run one user turn through the tool-calling loop."""
+    history = history or []
+    messages: list[dict] = [_system_message(), *history,
+                            {"role": "user", "content": user_message}]
+    new_messages: list[dict] = [{"role": "user", "content": user_message}]
+    sources: list[str] = []
+    tool_calls = 0
+
+    for _ in range(MAX_TOOL_ROUNDS):
+        resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL, tools=TOOL_SPECS)
+        choice = resp.choices[0].message
+
+        # Serialise the assistant message (with any tool calls) back into history.
+        assistant_msg: dict = {"role": "assistant", "content": choice.content or ""}
+        if choice.tool_calls:
+            assistant_msg["tool_calls"] = [
+                {
+                    "id": tc.id,
+                    "type": "function",
+                    "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                }
+                for tc in choice.tool_calls
+            ]
+        messages.append(assistant_msg)
+        new_messages.append(assistant_msg)
+
+        if not choice.tool_calls:
+            return AgentTurn(
+                answer=choice.content or "",
+                sources=sources,
+                new_messages=new_messages,
+                tool_calls=tool_calls,
+            )
+
+        # Execute each requested tool and feed results back.
+        for tc in choice.tool_calls:
+            tool_calls += 1
+            result, refs = dispatch_tool(tc.function.name, tc.function.arguments)
+            sources.extend(refs)
+            tool_msg = {
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "name": tc.function.name,
+                "content": _truncate_json(result),
+            }
+            messages.append(tool_msg)
+            new_messages.append(tool_msg)
+
+    # Exhausted tool rounds — ask for a final answer with no more tools.
+    resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL)
+    answer = resp.choices[0].message.content or "I couldn't complete that request."
+    new_messages.append({"role": "assistant", "content": answer})
+    return AgentTurn(answer=answer, sources=sources, new_messages=new_messages, tool_calls=tool_calls)
+
+
+def _truncate_json(obj, limit: int = 8000) -> str:
+    import json
+
+    text = json.dumps(obj, default=str)
+    if len(text) > limit:
+        return text[:limit] + '…"[truncated]"'
+    return text
