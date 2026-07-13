@@ -94,11 +94,35 @@ def run_agent(user_message: str, history: list[dict] | None = None) -> AgentTurn
         resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL, tools=TOOL_SPECS)
         choice = resp.choices[0].message
 
-        # Echo the assistant message back verbatim via model_dump() so any
-        # provider-specific fields (e.g. Gemini's tool-call thought_signature)
-        # are preserved — required for multi-round tool calls to validate.
-        assistant_msg = choice.model_dump(exclude_none=True)
-        assistant_msg.setdefault("role", "assistant")
+        # Build the assistant message manually instead of using model_dump().
+        # model_dump(exclude_none=True) on Gemini responses can produce tool_calls
+        # entries where function.name is missing/empty, causing:
+        #   400 function_response.name: Name cannot be empty
+        # on the next round. We rebuild the dict explicitly to guarantee the
+        # name field is always present.
+        if choice.tool_calls:
+            assistant_msg: dict = {
+                "role": "assistant",
+                "content": choice.content or "",
+                "tool_calls": [
+                    {
+                        "id": tc.id,
+                        "type": "function",
+                        "function": {
+                            "name": tc.function.name,
+                            "arguments": tc.function.arguments,
+                        },
+                    }
+                    for tc in choice.tool_calls
+                    if tc.function.name  # skip any malformed entries
+                ],
+            }
+        else:
+            assistant_msg = {
+                "role": "assistant",
+                "content": choice.content or "",
+            }
+
         messages.append(assistant_msg)
         new_messages.append(assistant_msg)
 
@@ -112,13 +136,21 @@ def run_agent(user_message: str, history: list[dict] | None = None) -> AgentTurn
 
         # Execute each requested tool and feed results back.
         for tc in choice.tool_calls:
+            if not tc.function.name:
+                logger.warning("Skipping tool call with empty function name (id=%s)", tc.id)
+                continue
             tool_calls += 1
-            result, refs = dispatch_tool(tc.function.name, tc.function.arguments)
+            try:
+                result, refs = dispatch_tool(tc.function.name, tc.function.arguments)
+            except Exception as exc:
+                logger.error("Tool %s raised: %s", tc.function.name, exc, exc_info=True)
+                result = {"error": f"Tool execution failed: {exc}"}
+                refs = []
             sources.extend(refs)
             tool_msg = {
                 "role": "tool",
                 "tool_call_id": tc.id,
-                "name": tc.function.name,
+                "name": tc.function.name,   # required by Gemini; must not be empty
                 "content": _truncate_json(result),
             }
             messages.append(tool_msg)
@@ -129,6 +161,7 @@ def run_agent(user_message: str, history: list[dict] | None = None) -> AgentTurn
     answer = resp.choices[0].message.content or "I couldn't complete that request."
     new_messages.append({"role": "assistant", "content": answer})
     return AgentTurn(answer=answer, sources=sources, new_messages=new_messages, tool_calls=tool_calls)
+
 
 
 def _truncate_json(obj, limit: int = 8000) -> str:
