@@ -81,7 +81,10 @@ def seed() -> None:
 
         # Initial superuser
         username = os.getenv("FIRST_SUPERUSER_USERNAME", "admin")
-        email = os.getenv("FIRST_SUPERUSER_EMAIL", "admin@crimerakshak.local")
+        # NOTE: must not use a reserved TLD like ".local" — Pydantic's EmailStr
+        # (email-validator >= 2) rejects special-use domains, which would make
+        # response serialization of this user fail (e.g. GET /auth/me -> 500).
+        email = os.getenv("FIRST_SUPERUSER_EMAIL", "admin@crimerakshak.example.com")
         password = os.getenv("FIRST_SUPERUSER_PASSWORD", "ChangeMe123!")
 
         existing = db.scalar(select(User).where(User.username == username))
