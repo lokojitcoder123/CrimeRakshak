@@ -20,7 +20,7 @@ def main():
     neo4j_user = os.getenv("NEO4J_USER", "neo4j")
     neo4j_pass = os.getenv("NEO4J_PASSWORD", "password")
     
-    datasets_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "datasets")
+    datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
     district_csv = os.path.join(datasets_dir, "02_district_wise_reported_cases.csv")
     
     logger.info("Starting Data Ingestion Pipeline")

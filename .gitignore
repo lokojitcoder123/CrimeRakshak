@@ -1,9 +1,33 @@
-
-
+# ── Environment variables (secrets) ──
 .env
+backend/.env
 
 # DuckDB build artifact (rebuild via python -m app.chat.data.loader)
 *.duckdb
 
 # Generated conversation PDFs
 backend/exports/
+
+# ── Virtual environments ──
+.venv/
+venv/
+ENV/
+
+# ── Python cache ──
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Pytest cache ──
+.pytest_cache/
+
+# ── Log files ──
+*.log
+backend/logs/
+
+# ── Temporary scripts ──
+test_pg.py
+
+# ── OS artifacts ──
+.DS_Store
+Thumbs.db
