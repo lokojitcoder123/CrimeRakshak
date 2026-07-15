@@ -71,11 +71,6 @@ export default function CrimeTypesPage() {
         </div>
       </div>
 
-      {/* Major vs Minor Statutory Head Drill-Down Matrix */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-        <StatutoryHeadDrillDown />
-      </motion.div>
-
       {/* KPI Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
@@ -130,7 +125,10 @@ export default function CrimeTypesPage() {
             <CardHeader className="relative border-b border-border/50 pb-4">
               <CardTitle className="font-heading text-base flex items-center justify-between">
                 <span>{t("Top Crime Categories")}</span>
-                <span className="text-xs font-normal text-muted-foreground">{t("Click to drill down")}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20">2024 Annual Baseline</span>
+                  <span className="text-xs font-normal text-muted-foreground">{t("Click to drill down")}</span>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="relative pt-4">
@@ -192,9 +190,12 @@ export default function CrimeTypesPage() {
           <Card className="glass-card flex flex-col h-full relative overflow-hidden transition-all duration-300 shadow-md">
             <div className="absolute inset-0 bg-gradient-to-bl from-brand-teal/5 to-transparent pointer-events-none" />
             <CardHeader className="relative border-b border-border/50 pb-4">
-              <CardTitle className="font-heading text-base flex items-center gap-2">
-                <PieChartIcon className="w-5 h-5 text-brand-teal" />
-                {selectedCat ? `${t(selectedCat.category)} ${t("Breakdown")}` : t("Category Breakdown")}
+              <CardTitle className="font-heading text-base flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <PieChartIcon className="w-5 h-5 text-brand-teal" />
+                  {selectedCat ? `${t(selectedCat.category)} ${t("Breakdown")}` : t("Category Breakdown")}
+                </div>
+                <span className="text-xs font-semibold text-brand-teal bg-brand-teal/10 px-2.5 py-1 rounded-full border border-brand-teal/20 ml-auto">2024 Sub-Head Volume</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="relative flex-1 pt-6">
@@ -311,6 +312,11 @@ export default function CrimeTypesPage() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Major vs Minor Statutory Head Drill-Down Matrix (Positioned at the bottom) */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+        <StatutoryHeadDrillDown />
+      </motion.div>
     </div>
   );
 }

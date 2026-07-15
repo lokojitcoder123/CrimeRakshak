@@ -25,8 +25,9 @@ export function CrimeCategoryDonut() {
   return (
     <Card className="glass-card relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20">
       <CardHeader className="pb-2">
-        <CardTitle className="font-heading text-base text-foreground">
-          {t("Crime Category Breakdown")}
+        <CardTitle className="font-heading text-base text-foreground flex items-center justify-between gap-2">
+          <span>{t("Crime Category Breakdown")}</span>
+          <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-0.5 rounded-full border border-brand-purple/20">2024 Annual Telemetry</span>
         </CardTitle>
         <p className="text-xs text-muted-foreground">
           {t("Official IPC statewide statutory volume share")}
@@ -91,6 +92,9 @@ export function CrimeCategoryDonut() {
             </span>
             <span className="text-base font-mono font-bold text-foreground">
               {stateTotalIpc.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[10px] uppercase font-mono font-bold text-emerald-500 tracking-wider mt-0.5 pt-0.5 border-t border-border/40">
+              + SLL: 78,900
             </span>
           </div>
         </div>

@@ -18,7 +18,7 @@ const columns: { key: SortKey; label: string; hideOnMobile?: boolean }[] = [
   { key: "theft", label: "Theft" },
   { key: "cyberCrime", label: "Cyber" },
   { key: "ndps", label: "NDPS", hideOnMobile: true },
-  { key: "total", label: "Total" },
+  { key: "total", label: "Total (Jan 2026)" },
 ];
 
 export default function DistrictHotspotTable() {
@@ -56,11 +56,13 @@ export default function DistrictHotspotTable() {
     >
       <Card className="glass-card hover:!transform-none">
         <CardHeader className="border-b border-border/50 pb-4">
-          <CardTitle className="font-heading text-base flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-brand-blue" />
-            {t("District Crime Hotspot Ranking")}
-            <span className="text-xs font-normal text-muted-foreground ml-auto">
-              {t("Jan 2026 — 37 Districts")}
+          <CardTitle className="font-heading text-base flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-brand-blue" />
+              {t("District Crime Hotspot Ranking")}
+            </div>
+            <span className="text-xs font-semibold text-brand-blue bg-brand-blue/10 px-2.5 py-1 rounded-full border border-brand-blue/20 ml-auto">
+              {t("Jan 2026 Monthly Ranking — 37 Districts")}
             </span>
           </CardTitle>
         </CardHeader>

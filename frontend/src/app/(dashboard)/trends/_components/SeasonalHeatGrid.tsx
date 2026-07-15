@@ -49,11 +49,13 @@ export default function SeasonalHeatGrid() {
     >
       <Card className="glass-card hover:!transform-none">
         <CardHeader className="border-b border-border/50 pb-4">
-          <CardTitle className="font-heading text-base flex items-center gap-2">
-            <Flame className="w-5 h-5 text-brand-red" />
-            {t("Seasonal Crime Heat Grid")}
-            <span className="text-xs font-normal text-muted-foreground ml-auto">
-              {t("3-Month Trajectory")}
+          <CardTitle className="font-heading text-base flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Flame className="w-5 h-5 text-brand-red" />
+              {t("Seasonal Crime Heat Grid")}
+            </div>
+            <span className="text-xs font-semibold text-brand-red bg-brand-red/10 px-2.5 py-1 rounded-full border border-brand-red/20 ml-auto">
+              Jan 2025 → Jan 2026 Grid
             </span>
           </CardTitle>
         </CardHeader>
@@ -66,8 +68,8 @@ export default function SeasonalHeatGrid() {
                   <th className="text-center py-3 px-3 font-medium min-w-[100px]">{t("Jan 2025")}</th>
                   <th className="text-center py-3 px-3 font-medium min-w-[100px]">{t("Dec 2025")}</th>
                   <th className="text-center py-3 px-3 font-medium min-w-[100px]">{t("Jan 2026")}</th>
-                  <th className="text-center py-3 px-3 font-medium min-w-[90px]">{t("MoM %")}</th>
-                  <th className="text-center py-3 px-3 font-medium min-w-[90px]">{t("YoY %")}</th>
+                  <th className="text-center py-3 px-3 font-medium min-w-[90px]">{t("MoM (Dec→Jan)")}</th>
+                  <th className="text-center py-3 px-3 font-medium min-w-[90px]">{t("YoY (Jan vs Jan)")}</th>
                   <th className="text-center py-3 px-3 font-medium min-w-[90px]">{t("Trend")}</th>
                 </tr>
               </thead>

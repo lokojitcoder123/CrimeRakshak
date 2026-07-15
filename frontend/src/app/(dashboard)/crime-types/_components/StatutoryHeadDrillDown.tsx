@@ -103,9 +103,12 @@ export function StatutoryHeadDrillDown() {
                 Official Major / Minor Head Classification (KSP Crime Review)
               </span>
             </div>
-            <CardTitle className="text-lg font-heading mt-1 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-brand-purple" />
-              {t("Major vs. Minor Statutory Head Drill-Down Matrix")}
+            <CardTitle className="text-lg font-heading mt-1 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-brand-purple" />
+                {t("Major vs. Minor Statutory Head Drill-Down Matrix")}
+              </div>
+              <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">2024–2025 YoY Telemetry</span>
             </CardTitle>
           </div>
         </div>
@@ -165,7 +168,7 @@ export function StatutoryHeadDrillDown() {
                           <th className="py-2 px-3 text-right">{t("2025 Reported")}</th>
                           <th className="py-2 px-3 text-right">{t("2024 Reported")}</th>
                           <th className="py-2 px-3 text-right">{t("YoY Shift")}</th>
-                          <th className="py-2 px-3 text-right">{t("Disposal Rate")}</th>
+                          <th className="py-2 px-3 text-right">{t("Disposal Rate (2025 Annual)")}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/20 text-xs">

@@ -27,8 +27,9 @@ export function MonthlyTrendChart() {
   return (
     <Card className="glass-card relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20">
       <CardHeader className="pb-2">
-        <CardTitle className="font-heading text-base text-foreground">
-          {t("Monthly Crime Volume Comparison — December 2025 vs Baseline")}
+        <CardTitle className="font-heading text-base text-foreground flex items-center justify-between gap-2">
+          <span>{t("Monthly Crime Volume Comparison — December 2025 vs Baseline")}</span>
+          <span className="text-xs font-semibold text-brand-blue bg-brand-blue/10 px-2.5 py-0.5 rounded-full border border-brand-blue/20 ml-auto">Dec 2024 vs Nov 2025 vs Dec 2025</span>
         </CardTitle>
         <p className="text-xs text-muted-foreground">
           {t("Official statutory monthly reported cases across major IPC heads (KSP / NCRB Telemetry)")}

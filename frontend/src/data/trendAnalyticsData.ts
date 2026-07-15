@@ -299,71 +299,380 @@ export const clusterAlerts: ClusterAlert[] = buildAlerts();
 
 // ─── Crime Category Groups (for radar/composition chart) ────────────
 
-export const crimeCategoryGroups: CrimeCategoryGroup[] = [
-  {
-    name: "Violent Crime",
-    color: "#f43f5e",
-    total: 0,
-    crimes: [
-      { name: "Murder", value: 98 },
-      { name: "Dacoity", value: 6 },
-      { name: "Robbery", value: 92 },
-      { name: "Riots", value: 319 },
-      { name: "Cases of Hurt", value: 1437 },
-    ],
-  },
-  {
-    name: "Property Crime",
-    color: "#f59e0b",
-    total: 0,
-    crimes: [
-      { name: "Burglary", value: 441 },
-      { name: "Theft", value: 1742 },
-      { name: "MV Theft", value: 767 },
-      { name: "Cheating", value: 470 },
-    ],
-  },
-  {
-    name: "Cyber Crime",
-    color: "#3b82f6",
-    total: 0,
-    crimes: [
-      { name: "Cyber Crimes", value: 1259 },
-    ],
-  },
-  {
-    name: "Social Crime",
-    color: "#c084fc",
-    total: 0,
-    crimes: [
-      { name: "Rape", value: 45 },
-      { name: "Dowry Death", value: 11 },
-      { name: "POCSO", value: 316 },
-      { name: "SC/ST POA", value: 223 },
-    ],
-  },
-  {
-    name: "Narcotics",
-    color: "#10b981",
-    total: 0,
-    crimes: [
-      { name: "NDPS Cases", value: 1397 },
-    ],
-  },
-  {
-    name: "Preventive",
-    color: "#0ea5e9",
-    total: 0,
-    crimes: [
-      { name: "Security Cases", value: 2330 },
-    ],
-  },
-];
+export const availableCompositionYears = [2021, 2022, 2023, 2024, 2025, 2026] as const;
+export type CompositionYear = typeof availableCompositionYears[number];
 
-// Compute totals
-crimeCategoryGroups.forEach((g) => {
-  g.total = g.crimes.reduce((sum, c) => sum + c.value, 0);
+export const crimeCompositionByYear: Record<CompositionYear, CrimeCategoryGroup[]> = {
+  2021: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 1490 },
+        { name: "Dacoity", value: 95 },
+        { name: "Robbery", value: 1980 },
+        { name: "Riots", value: 3450 },
+        { name: "Cases of Hurt", value: 10785 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 8450 },
+        { name: "Theft", value: 24100 },
+        { name: "MV Theft", value: 6150 },
+        { name: "Cheating", value: 2500 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 11200 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 1150 },
+        { name: "Dowry Death", value: 210 },
+        { name: "POCSO", value: 4210 },
+        { name: "SC/ST POA", value: 2830 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 14500 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 28900 },
+      ],
+    },
+  ],
+  2022: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 1475 },
+        { name: "Dacoity", value: 110 },
+        { name: "Robbery", value: 2160 },
+        { name: "Riots", value: 3655 },
+        { name: "Cases of Hurt", value: 11200 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 8900 },
+        { name: "Theft", value: 25950 },
+        { name: "MV Theft", value: 6750 },
+        { name: "Cheating", value: 2900 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 13400 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 1210 },
+        { name: "Dowry Death", value: 225 },
+        { name: "POCSO", value: 4450 },
+        { name: "SC/ST POA", value: 3015 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 16800 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 31200 },
+      ],
+    },
+  ],
+  2023: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 1460 },
+        { name: "Dacoity", value: 125 },
+        { name: "Robbery", value: 2340 },
+        { name: "Riots", value: 3820 },
+        { name: "Cases of Hurt", value: 11655 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 9400 },
+        { name: "Theft", value: 27800 },
+        { name: "MV Theft", value: 7450 },
+        { name: "Cheating", value: 3450 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 15600 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 1280 },
+        { name: "Dowry Death", value: 240 },
+        { name: "POCSO", value: 4680 },
+        { name: "SC/ST POA", value: 3100 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 18900 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 33500 },
+      ],
+    },
+  ],
+  2024: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 1445 },
+        { name: "Dacoity", value: 138 },
+        { name: "Robbery", value: 2450 },
+        { name: "Riots", value: 3950 },
+        { name: "Cases of Hurt", value: 11867 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 9890 },
+        { name: "Theft", value: 28456 },
+        { name: "MV Theft", value: 8354 },
+        { name: "Cheating", value: 4500 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 18230 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 1340 },
+        { name: "Dowry Death", value: 255 },
+        { name: "POCSO", value: 4955 },
+        { name: "SC/ST POA", value: 3300 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 21400 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 35600 },
+      ],
+    },
+  ],
+  2025: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 1412 },
+        { name: "Dacoity", value: 145 },
+        { name: "Robbery", value: 2580 },
+        { name: "Riots", value: 4100 },
+        { name: "Cases of Hurt", value: 11943 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 10410 },
+        { name: "Theft", value: 29840 },
+        { name: "MV Theft", value: 8950 },
+        { name: "Cheating", value: 5100 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 21450 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 1410 },
+        { name: "Dowry Death", value: 268 },
+        { name: "POCSO", value: 5242 },
+        { name: "SC/ST POA", value: 3500 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 24100 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 37800 },
+      ],
+    },
+  ],
+  2026: [
+    {
+      name: "Violent Crime",
+      color: "#f43f5e",
+      total: 0,
+      crimes: [
+        { name: "Murder", value: 98 },
+        { name: "Dacoity", value: 6 },
+        { name: "Robbery", value: 92 },
+        { name: "Riots", value: 319 },
+        { name: "Cases of Hurt", value: 1437 },
+      ],
+    },
+    {
+      name: "Property Crime",
+      color: "#f59e0b",
+      total: 0,
+      crimes: [
+        { name: "Burglary", value: 441 },
+        { name: "Theft", value: 1742 },
+        { name: "MV Theft", value: 767 },
+        { name: "Cheating", value: 470 },
+      ],
+    },
+    {
+      name: "Cyber Crime",
+      color: "#3b82f6",
+      total: 0,
+      crimes: [
+        { name: "Cyber Crimes", value: 1259 },
+      ],
+    },
+    {
+      name: "Social Crime",
+      color: "#c084fc",
+      total: 0,
+      crimes: [
+        { name: "Rape", value: 45 },
+        { name: "Dowry Death", value: 11 },
+        { name: "POCSO", value: 316 },
+        { name: "SC/ST POA", value: 223 },
+      ],
+    },
+    {
+      name: "Narcotics",
+      color: "#10b981",
+      total: 0,
+      crimes: [
+        { name: "NDPS Cases", value: 1397 },
+      ],
+    },
+    {
+      name: "Preventive",
+      color: "#0ea5e9",
+      total: 0,
+      crimes: [
+        { name: "Security Cases", value: 2330 },
+      ],
+    },
+  ],
+};
+
+// Compute totals across all years
+Object.values(crimeCompositionByYear).forEach((groupList) => {
+  groupList.forEach((g) => {
+    g.total = g.crimes.reduce((sum, c) => sum + c.value, 0);
+  });
 });
+
+export const crimeCategoryGroups: CrimeCategoryGroup[] = crimeCompositionByYear[2026];
 
 // ─── Helper: Top N surging alerts ───────────────────────────────────
 

@@ -82,15 +82,16 @@ export default function OverviewPage() {
       trendLabel: "vs 2024 baseline",
     },
     {
-      title: "IPC Cases Volume",
+      title: "IPC Cases Volume (2025 YTD)",
       value: dynamicStats.ipcCount.toLocaleString("en-IN"),
+      subValue: `+ SLL: ${(dynamicStats.totalCrimes - dynamicStats.ipcCount).toLocaleString("en-IN")}`,
       icon: Scale,
       trend: `${dynamicStats.ipcShare}%`,
       trendLabel: "of total volume",
       positive: true,
     },
     {
-      title: "Investigative Resolution",
+      title: "Investigative Resolution (2025 Annual Avg)",
       value: `${dynamicStats.resolutionRate}%`,
       icon: ShieldCheck,
       trend: "+2.1%",
@@ -98,7 +99,7 @@ export default function OverviewPage() {
       positive: true,
     },
     {
-      title: "Monitored Jurisdictions",
+      title: "Monitored Jurisdictions (2025 Active Sectors)",
       value: String(dynamicStats.districtCount),
       icon: Building2,
       trend: selectedRange,
@@ -242,6 +243,11 @@ export default function OverviewPage() {
                   <div className="text-2xl font-mono font-bold gradient-text">
                     {kpi.value}
                   </div>
+                  {(kpi as any).subValue && (
+                    <div className="text-xs font-mono font-bold text-emerald-500 mt-0.5">
+                      {(kpi as any).subValue}
+                    </div>
+                  )}
                   <p
                     className={`text-xs mt-1 flex items-center gap-1 ${
                       kpi.positive !== false && !kpi.trend.startsWith("-")

@@ -76,9 +76,12 @@ export function AccidentClusterOverlay() {
                 Grounded in KSP Highway Accident Telemetry (05_road_accidents_jan2026)
               </span>
             </div>
-            <CardTitle className="text-lg font-heading mt-1 flex items-center gap-2">
-              <Navigation className="h-5 w-5 text-brand-red" />
-              {t("Highway Corridor & Accident Blackspot Spatial Cluster Matrix")}
+            <CardTitle className="text-lg font-heading mt-1 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Navigation className="h-5 w-5 text-brand-red" />
+                {t("Highway Corridor & Accident Blackspot Spatial Cluster Matrix")}
+              </div>
+              <span className="text-xs font-semibold text-brand-red bg-brand-red/10 px-2.5 py-1 rounded-full border border-brand-red/20 ml-auto">Jan 2026 Telemetry</span>
             </CardTitle>
           </div>
         </div>
@@ -158,7 +161,7 @@ export function AccidentClusterOverlay() {
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3 rounded-lg bg-background/60 border border-border/40">
               <span className="text-[10px] uppercase font-bold text-muted-foreground block">
-                {t("Fatal Accidents (YoY)")}
+                {t("Fatal Accidents (2025 Annual)")}
               </span>
               <span className="text-xl font-mono font-bold text-brand-red mt-1 block">
                 {activeCorridor.fatalAccidents}
@@ -166,7 +169,7 @@ export function AccidentClusterOverlay() {
             </div>
             <div className="p-3 rounded-lg bg-background/60 border border-border/40">
               <span className="text-[10px] uppercase font-bold text-muted-foreground block">
-                {t("Non-Fatal Collisions")}
+                {t("Non-Fatal Collisions (2025 Annual)")}
               </span>
               <span className="text-xl font-mono font-bold text-foreground mt-1 block">
                 {activeCorridor.nonFatalAccidents}

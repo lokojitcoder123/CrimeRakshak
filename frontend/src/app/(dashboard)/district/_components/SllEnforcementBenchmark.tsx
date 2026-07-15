@@ -100,9 +100,12 @@ export function SllEnforcementBenchmark() {
                 Grounded in KSP SLL & COTPA District Reports
               </span>
             </div>
-            <CardTitle className="text-lg font-heading mt-1 flex items-center gap-2">
-              <ShieldAlert className="h-5 w-5 text-brand-green" />
-              {t("COTPA & Special Local Law (SLL) Enforcement Benchmarking")}
+            <CardTitle className="text-lg font-heading mt-1 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-brand-green" />
+                {t("COTPA & Special Local Law (SLL) Enforcement Benchmarking")}
+              </div>
+              <span className="text-xs font-semibold text-brand-green bg-brand-green/10 px-2.5 py-1 rounded-full border border-brand-green/20 ml-auto">2025 Annual Index</span>
             </CardTitle>
           </div>
           <div className="flex gap-1.5 flex-wrap">
@@ -129,10 +132,10 @@ export function SllEnforcementBenchmark() {
               <tr className="border-b border-border/30 text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/10">
                 <th className="py-3 px-4">{t("District Jurisdiction")}</th>
                 <th className="py-3 px-4">{t("Police Range")}</th>
-                <th className="py-3 px-4 text-right">{t("COTPA Cases")}</th>
-                <th className="py-3 px-4 text-right">{t("NDPS Narcotics")}</th>
-                <th className="py-3 px-4 text-right">{t("Excise Act")}</th>
-                <th className="py-3 px-4 text-right">{t("Total SLL Volume")}</th>
+                <th className="py-3 px-4 text-right">{t("COTPA (2025)")}</th>
+                <th className="py-3 px-4 text-right">{t("NDPS (2025)")}</th>
+                <th className="py-3 px-4 text-right">{t("Excise (2025)")}</th>
+                <th className="py-3 px-4 text-right">{t("Total SLL (2025)")}</th>
                 <th className="py-3 px-4 text-right">{t("Enforcement Score")}</th>
                 <th className="py-3 px-4 text-center">{t("Rating")}</th>
               </tr>

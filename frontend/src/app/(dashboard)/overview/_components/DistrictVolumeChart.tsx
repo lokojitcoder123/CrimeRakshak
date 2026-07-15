@@ -45,8 +45,11 @@ export function DistrictVolumeChart() {
     <Card className="glass-card relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3">
         <div>
-          <CardTitle className="font-heading text-base text-foreground">
-            {t("Top 10 Districts — Crime Volume")}
+          <CardTitle className="font-heading text-base text-foreground flex items-center gap-2">
+            <span>{t("Top 10 Districts — Crime Volume")}</span>
+            <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-0.5 rounded-full border border-brand-purple/20">
+              {time === "annual" ? t("2025 Annual Official") : time === "monthly" ? t("2025 Monthly Average") : t("2025 Daily Average")}
+            </span>
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-0.5">
             {t("Official KSP statutory jurisdiction volume (Real reported IPC & SLL cases)")}
@@ -97,8 +100,8 @@ export function DistrictVolumeChart() {
                   <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorSll" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -140,7 +143,7 @@ export function DistrictVolumeChart() {
                     type="natural"
                     name={t("SLL Cases")}
                     dataKey="SLL"
-                    stroke="var(--chart-2)"
+                    stroke="#10b981"
                     fill="url(#colorSll)"
                     strokeWidth={3}
                     dot={{ r: 4 }}
@@ -166,7 +169,7 @@ export function DistrictVolumeChart() {
                   type="natural"
                   name={t("SLL Cases")}
                   dataKey="SLL"
-                  stroke="var(--chart-2)"
+                  stroke="#10b981"
                   fill="url(#colorSll)"
                   strokeWidth={3}
                   dot={{ r: 4 }}

@@ -22,15 +22,16 @@ import {
 import { TrendingUp, Calendar, ArrowUpRight, ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/components/LanguageContext";
 
-type MetricKey = "totalIpc" | "cyber" | "theft" | "violentCrime" | "murder";
+type MetricKey = "totalIpc" | "sll" | "cyber" | "theft" | "violentCrime" | "murder";
 
 export function DecadalLongitudinalChart() {
   const { t } = useLanguage();
   const [metric, setMetric] = useState<MetricKey>("totalIpc");
 
   const metricLabels: Record<MetricKey, { name: string; color: string }> = {
-    totalIpc: { name: "Total IPC Crime Volume", color: "#6366f1" },
-    cyber: { name: "Cyber & Digital Frauds", color: "#06b6d4" },
+    totalIpc: { name: "Total IPC Crime Volume", color: "#8b5cf6" },
+    sll: { name: "Special & Local Laws (SLL)", color: "#10b981" },
+    cyber: { name: "Cyber & Digital Frauds", color: "#c084fc" },
     theft: { name: "Property Theft & Burglary", color: "#f59e0b" },
     violentCrime: { name: "Violent Body Offences", color: "#ec4899" },
     murder: { name: "Homicide & Murder", color: "#ef4444" },
@@ -49,15 +50,19 @@ export function DecadalLongitudinalChart() {
                 2001 – 2028 (Grounded in Historical KSP Archive)
               </span>
             </div>
-            <CardTitle className="text-lg font-heading mt-1 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-brand-purple" />
-              {t("Multi-Decade Longitudinal Crime Pattern Forecasting")}
+            <CardTitle className="text-lg font-heading mt-1 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-brand-purple" />
+                {t("Multi-Decade Longitudinal Crime Pattern Forecasting")}
+              </div>
+              <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">2001–2028 Longitudinal</span>
             </CardTitle>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {(
               [
                 { id: "totalIpc", label: "Total IPC" },
+                { id: "sll", label: "SLL Cases" },
                 { id: "cyber", label: "Cyber Frauds" },
                 { id: "theft", label: "Property Theft" },
                 { id: "violentCrime", label: "Violent Crime" },
@@ -83,7 +88,7 @@ export function DecadalLongitudinalChart() {
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={karnatakaStateDecadalSeries}
-              margin={{ left: 10, right: 15, top: 10, bottom: 20 }}
+              margin={{ left: 10, right: 20, top: 30, bottom: 20 }}
             >
               <defs>
                 <linearGradient id="gradLongitudinal" x1="0" y1="0" x2="0" y2="1">
@@ -123,6 +128,8 @@ export function DecadalLongitudinalChart() {
                   position: "top",
                   fill: "#f59e0b",
                   fontSize: 11,
+                  fontWeight: 600,
+                  dy: -4,
                 }}
               />
               <Area
@@ -131,6 +138,7 @@ export function DecadalLongitudinalChart() {
                 stroke={metricLabels[metric].color}
                 fill="url(#gradLongitudinal)"
                 strokeWidth={3}
+                tooltipType="none"
               />
               <Line
                 type="monotone"

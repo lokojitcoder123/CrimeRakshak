@@ -90,7 +90,7 @@ export default function EmergingClusterAlerts() {
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle className="w-5 h-5 text-red-400" />
           <h3 className="font-heading font-bold text-base text-foreground">{t("Emerging Crime Surges")}</h3>
-          <span className="text-xs text-muted-foreground">({t("Dec 2025 → Jan 2026")})</span>
+          <span className="text-xs font-semibold text-brand-red bg-brand-red/10 px-2.5 py-0.5 rounded-full border border-brand-red/20">{t("Dec 2025 → Jan 2026 Shift")}</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {surges.map((alert, i) => (
@@ -108,6 +108,7 @@ export default function EmergingClusterAlerts() {
         <div className="flex items-center gap-2 mb-3">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
           <h3 className="font-heading font-bold text-base text-foreground">{t("Positive Trends (Declining)")}</h3>
+          <span className="text-xs font-semibold text-brand-green bg-brand-green/10 px-2.5 py-0.5 rounded-full border border-brand-green/20">{t("Dec 2025 → Jan 2026 Shift")}</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {drops.map((alert, i) => (

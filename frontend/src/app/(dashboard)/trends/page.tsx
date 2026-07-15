@@ -121,7 +121,7 @@ export default function TrendsPage() {
             <CardHeader>
               <CardTitle className="font-heading text-base flex items-center justify-between">
                 <span>{t("Month-over-Month Shift")}</span>
-                <span className="text-xs font-normal text-muted-foreground">{t("Previous vs Current")}</span>
+                <span className="text-xs font-semibold text-brand-yellow bg-brand-yellow/10 px-2.5 py-0.5 rounded-full border border-brand-yellow/20">Nov 2025 vs Dec 2025</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1">
@@ -161,7 +161,7 @@ export default function TrendsPage() {
             <CardHeader>
               <CardTitle className="font-heading text-base flex items-center justify-between">
                 <span>{t("Year-to-Date Volume")}</span>
-                <span className="text-xs font-normal text-muted-foreground">{t("Cumulative")}</span>
+                <span className="text-xs font-semibold text-brand-red bg-brand-red/10 px-2.5 py-0.5 rounded-full border border-brand-red/20">2025 Cumulative YTD</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1">
@@ -194,9 +194,12 @@ export default function TrendsPage() {
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
         <Card className="glass-card hover:!transform-none">
           <CardHeader className="border-b border-border/50 pb-4">
-            <CardTitle className="font-heading text-base flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand-purple" />
-              {t("Detailed Metric Changes")}
+            <CardTitle className="font-heading text-base flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-brand-purple" />
+                {t("Detailed Metric Changes")}
+              </div>
+              <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">Nov 2025 → Dec 2025 Audit</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -205,8 +208,8 @@ export default function TrendsPage() {
                 <thead>
                   <tr className="bg-muted/20 text-muted-foreground border-b border-border/50">
                     <th className="text-left py-4 px-6 font-medium">{t("Crime Category")}</th>
-                    <th className="text-right py-4 px-6 font-medium">{t("Previous Month")}</th>
-                    <th className="text-right py-4 px-6 font-medium">{t("Current Month")}</th>
+                    <th className="text-right py-4 px-6 font-medium">{t("Previous Month (Nov 2025)")}</th>
+                    <th className="text-right py-4 px-6 font-medium">{t("Current Month (Dec 2025)")}</th>
                     <th className="text-right py-4 px-6 font-medium">{t("Trend Indicator")}</th>
                     <th className="text-right py-4 px-6 font-medium">{t("Change")}</th>
                   </tr>

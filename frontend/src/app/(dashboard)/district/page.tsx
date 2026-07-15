@@ -78,7 +78,7 @@ export default function DistrictPage() {
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="glass-card lg:col-span-3 relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
-          <CardHeader className="relative"><CardTitle className="font-heading text-base">{t("IPC vs SLL by District")}</CardTitle></CardHeader>
+          <CardHeader className="relative"><CardTitle className="font-heading text-base flex items-center justify-between gap-2">{t("IPC vs SLL by District")}<span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">2025 Annual Baseline</span></CardTitle></CardHeader>
           <CardContent className="relative">
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -109,7 +109,7 @@ export default function DistrictPage() {
         </Card>
         <Card className="glass-card lg:col-span-2 relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
-          <CardHeader className="relative"><CardTitle className="font-heading text-base">{t("Range Share")}</CardTitle></CardHeader>
+          <CardHeader className="relative"><CardTitle className="font-heading text-base flex items-center justify-between gap-2">{t("Range Share")}<span className="text-xs font-semibold text-brand-blue bg-brand-blue/10 px-2.5 py-1 rounded-full border border-brand-blue/20 ml-auto">2025 Volume Distribution</span></CardTitle></CardHeader>
           <CardContent className="relative">
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -151,7 +151,7 @@ export default function DistrictPage() {
       <Card className="glass-card relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 relative">
-          <CardTitle className="font-heading text-base">{t("District Table")}</CardTitle>
+          <CardTitle className="font-heading text-base flex items-center gap-2">{t("District Table")}<span className="text-xs font-semibold text-brand-teal bg-brand-teal/10 px-2.5 py-1 rounded-full border border-brand-teal/20 ml-2">2025 Annual Telemetry</span></CardTitle>
           <div className="relative max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder={t("Search districts, crimes…")} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
