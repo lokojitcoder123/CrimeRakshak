@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 
 from app.chat.llm import chat_completion
 from app.chat.tools import TOOL_SPECS, dispatch_tool, get_schema_card
+from app.chat.fallback import generate_fallback_response
 from app.core.config import settings
 from app.core.logging import get_logger
 
@@ -159,84 +160,97 @@ def run_agent(user_message: str, history: list[dict] | None = None, language: st
         language: Response language code ('en' or 'kn'). Passed from the router
                   so the system prompt can instruct the model to reply in Kannada.
     """
-    history = history or []
-    messages: list[dict] = [_system_message(language), *history,
-                            {"role": "user", "content": user_message}]
-    new_messages: list[dict] = [{"role": "user", "content": user_message}]
-    sources: list[str] = []
-    tool_calls = 0
+    try:
+        # Check if API key is REPLACE_ME or empty to fail fast and use fallback
+        if not settings.GEMINI_API_KEY or settings.GEMINI_API_KEY == "REPLACE_ME":
+            raise RuntimeError("API key placeholder detected")
 
-    for _ in range(MAX_TOOL_ROUNDS):
-        resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL, tools=TOOL_SPECS)
-        choice = resp.choices[0].message
+        history = history or []
+        messages: list[dict] = [_system_message(language), *history,
+                                {"role": "user", "content": user_message}]
+        new_messages: list[dict] = [{"role": "user", "content": user_message}]
+        sources: list[str] = []
+        tool_calls = 0
 
-        # Build the assistant message manually instead of using model_dump().
-        # model_dump(exclude_none=True) on Gemini responses can produce tool_calls
-        # entries where function.name is missing/empty, causing:
-        #   400 function_response.name: Name cannot be empty
-        # on the next round. We rebuild the dict explicitly to guarantee the
-        # name field is always present.
-        if choice.tool_calls:
-            assistant_msg: dict = {
-                "role": "assistant",
-                "content": choice.content or "",
-                "tool_calls": [
-                    {
-                        "id": tc.id,
-                        "type": "function",
-                        "function": {
-                            "name": tc.function.name,
-                            "arguments": tc.function.arguments,
-                        },
-                    }
-                    for tc in choice.tool_calls
-                    if tc.function.name  # skip any malformed entries
-                ],
-            }
-        else:
-            assistant_msg = {
-                "role": "assistant",
-                "content": choice.content or "",
-            }
+        for _ in range(MAX_TOOL_ROUNDS):
+            resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL, tools=TOOL_SPECS)
+            choice = resp.choices[0].message
 
-        messages.append(assistant_msg)
-        new_messages.append(assistant_msg)
+            # Build the assistant message manually instead of using model_dump().
+            # model_dump(exclude_none=True) on Gemini responses can produce tool_calls
+            # entries where function.name is missing/empty, causing:
+            #   400 function_response.name: Name cannot be empty
+            # on the next round. We rebuild the dict explicitly to guarantee the
+            # name field is always present.
+            if choice.tool_calls:
+                assistant_msg: dict = {
+                    "role": "assistant",
+                    "content": choice.content or "",
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments,
+                            },
+                        }
+                        for tc in choice.tool_calls
+                        if tc.function.name  # skip any malformed entries
+                    ],
+                }
+            else:
+                assistant_msg = {
+                    "role": "assistant",
+                    "content": choice.content or "",
+                }
 
-        if not choice.tool_calls:
-            return AgentTurn(
-                answer=choice.content or "",
-                sources=sources,
-                new_messages=new_messages,
-                tool_calls=tool_calls,
-            )
+            messages.append(assistant_msg)
+            new_messages.append(assistant_msg)
 
-        # Execute each requested tool and feed results back.
-        for tc in choice.tool_calls:
-            if not tc.function.name:
-                logger.warning("Skipping tool call with empty function name (id=%s)", tc.id)
-                continue
-            tool_calls += 1
-            try:
-                result, refs = dispatch_tool(tc.function.name, tc.function.arguments)
-            except Exception as exc:
-                logger.error("Tool %s raised: %s", tc.function.name, exc, exc_info=True)
-                result = {"error": f"Tool execution failed: {exc}"}
-                refs = []
-            sources.extend(refs)
-            tool_msg = {
-                "role": "tool",
-                "tool_call_id": tc.id,
-                "name": tc.function.name,   # required by Gemini; must not be empty
-                "content": _truncate_json(result),
-            }
-            messages.append(tool_msg)
-            new_messages.append(tool_msg)
+            if not choice.tool_calls:
+                return AgentTurn(
+                    answer=choice.content or "",
+                    sources=sources,
+                    new_messages=new_messages,
+                    tool_calls=tool_calls,
+                )
 
-    # Exhausted tool rounds — ask for a final answer with no more tools.
-    resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL)
-    answer = resp.choices[0].message.content or "I couldn't complete that request."
-    new_messages.append({"role": "assistant", "content": answer})
-    return AgentTurn(answer=answer, sources=sources, new_messages=new_messages, tool_calls=tool_calls)
+            # Execute each requested tool and feed results back.
+            for tc in choice.tool_calls:
+                if not tc.function.name:
+                    logger.warning("Skipping tool call with empty function name (id=%s)", tc.id)
+                    continue
+                tool_calls += 1
+                try:
+                    result, refs = dispatch_tool(tc.function.name, tc.function.arguments)
+                except Exception as exc:
+                    logger.error("Tool %s raised: %s", tc.function.name, exc, exc_info=True)
+                    result = {"error": f"Tool execution failed: {exc}"}
+                    refs = []
+                sources.extend(refs)
+                tool_msg = {
+                    "role": "tool",
+                    "tool_call_id": tc.id,
+                    "name": tc.function.name,   # required by Gemini; must not be empty
+                    "content": _truncate_json(result),
+                }
+                messages.append(tool_msg)
+                new_messages.append(tool_msg)
+
+        # Exhausted tool rounds — ask for a final answer with no more tools.
+        resp = chat_completion(messages, model=settings.LLM_AGENT_MODEL)
+        answer = resp.choices[0].message.content or "I couldn't complete that request."
+        new_messages.append({"role": "assistant", "content": answer})
+        return AgentTurn(answer=answer, sources=sources, new_messages=new_messages, tool_calls=tool_calls)
+    except Exception as exc:
+        logger.warning("LLM agent run failed, invoking offline fallback handler: %s", exc)
+        answer, sources = generate_fallback_response(user_message)
+        new_messages = [
+            {"role": "user", "content": user_message},
+            {"role": "assistant", "content": answer}
+        ]
+        return AgentTurn(answer=answer, sources=sources, new_messages=new_messages, tool_calls=0)
 
 
 

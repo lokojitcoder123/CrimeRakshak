@@ -397,3 +397,49 @@ Failed to read any data from server ResolvedIPv4Address(('127.0.0.1', 7687)) aft
 2026-07-14 21:47:24,393 - chat.api - INFO - chat turn user=admin conv=d7804250-1101-498e-8262-fb388f4b0b24 lang=en
 2026-07-14 21:50:26,568 - chat.api - INFO - chat turn user=admin conv=d7804250-1101-498e-8262-fb388f4b0b24 lang=en
 2026-07-14 21:50:36,476 - chat.api - INFO - chat turn user=admin conv=d7804250-1101-498e-8262-fb388f4b0b24 lang=en
+2026-07-15 13:24:14,749 - seed - INFO - Created permission: graph:read
+2026-07-15 13:24:14,753 - seed - INFO - Created permission: graph:write
+2026-07-15 13:24:14,756 - seed - INFO - Created permission: financial:read
+2026-07-15 13:24:14,759 - seed - INFO - Created permission: financial:write
+2026-07-15 13:24:14,762 - seed - INFO - Created permission: audit:read
+2026-07-15 13:24:14,765 - seed - INFO - Created permission: users:read
+2026-07-15 13:24:14,767 - seed - INFO - Created permission: rbac:manage
+2026-07-15 13:24:14,777 - seed - INFO - Created role: admin
+2026-07-15 13:24:14,781 - seed - INFO - Created role: analyst
+2026-07-15 13:24:14,784 - seed - INFO - Created role: officer
+2026-07-15 13:24:14,786 - seed - INFO - Created role: viewer
+2026-07-15 13:24:15,203 - seed - INFO - Created initial superuser: admin
+2026-07-15 13:24:15,204 - seed - INFO - Seeding complete.
+2026-07-15 13:26:32,780 - chat.api - INFO - chat turn user=admin conv=9271154e-8e93-4152-aaa6-1685fab4162f lang=en
+2026-07-15 13:26:33,830 - app.chat.data.loader - INFO - Loaded 02_district_wise_reported_cases.csv -> table district_crime_matrix (39 rows)
+2026-07-15 13:26:33,957 - app.chat.data.loader - INFO - Loaded district_wise_major_heads_yearly.csv -> table district_major_heads_yearly (49 rows)
+2026-07-15 13:26:34,001 - app.chat.data.loader - INFO - Loaded 01_crime_review_summary.csv -> table crime_review_summary (28 rows)
+2026-07-15 13:26:34,045 - app.chat.data.loader - INFO - Loaded 09_crime_against_women.csv -> table crimes_against_women (24 rows)
+2026-07-15 13:26:34,076 - app.chat.data.loader - INFO - Loaded 10_crime_against_children.csv -> table crimes_against_children (21 rows)
+2026-07-15 13:26:34,106 - app.chat.data.loader - INFO - Loaded 11_crime_against_sc_st.csv -> table crimes_against_sc_st (6 rows)
+2026-07-15 13:26:34,129 - app.chat.data.loader - INFO - Loaded 04_sakala_district_receipts_disposals.csv -> table sakala_disposals (38 rows)
+2026-07-15 13:26:34,146 - app.chat.data.loader - INFO - Loaded 06_esign_fir_jan2026.csv -> table esign_fir (39 rows)
+2026-07-15 13:26:34,186 - app.chat.data.loader - INFO - Loaded 07_esign_chargesheet_jan2026.csv -> table esign_chargesheet (39 rows)
+2026-07-15 13:35:31,488 - chat.api - INFO - chat turn user=admin conv=b1cf4b2d-80f6-4496-aedd-3fb414443d53 lang=en
+2026-07-15 13:35:31,488 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 13:35:42,265 - chat.api - INFO - chat turn user=admin conv=a487f00c-eaf5-480c-b789-462f1c46e064 lang=kn
+2026-07-15 13:35:42,267 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 13:36:05,197 - chat.api - INFO - chat turn user=admin conv=49f61641-1a92-4328-9527-6ea569ee82ab lang=kn
+2026-07-15 13:36:05,211 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 13:36:31,448 - chat.api - INFO - chat turn user=admin conv=07a3ba15-0e11-42f2-aa5f-c34cb0c2378f lang=kn
+2026-07-15 13:36:31,449 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 13:59:17,476 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 13:59:17,490 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 13:59:48,025 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 13:59:48,032 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 14:00:13,473 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 14:00:13,520 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 14:00:34,372 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 14:00:34,373 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 14:00:44,721 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 14:00:44,728 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 14:00:55,087 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=en
+2026-07-15 14:00:55,093 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 17:58:38,088 - chat.api - INFO - chat turn user=admin conv=656e5be9-956f-41e2-a078-3996ee06f9b0 lang=kn
+2026-07-15 17:58:38,121 - chat.agent - WARNING - LLM agent run failed, invoking offline fallback handler: API key placeholder detected
+2026-07-15 17:59:21,640 - chat.pdf - INFO - exported conversation 656e5be9-956f-41e2-a078-3996ee06f9b0 -> exports\conversation_656e5be9-956f-41e2-a078-3996ee06f9b0.pdf
