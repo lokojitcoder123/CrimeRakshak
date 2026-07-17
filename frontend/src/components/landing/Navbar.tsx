@@ -104,7 +104,7 @@ export function Navbar() {
               <Shield className="h-5 w-5 text-accent" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="brand-logo font-bold text-2xl text-accent">CrimeRakshak</span>
+              <span className="brand-logo font-bold text-3xl text-accent">CrimeRakshak</span>
             </div>
           </Link>
 
@@ -134,7 +134,7 @@ export function Navbar() {
                       transition={exit.transition}
                       className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-48"
                     >
-                      <GlassPanel className="p-2 flex flex-col gap-1">
+                      <GlassPanel className="p-2 flex flex-col gap-1 bg-white shadow-lg border-slate-200">
                         {link.items.map(item => (
                           <Link 
                             key={item.label} 
@@ -194,7 +194,7 @@ export function Navbar() {
           >
             <div className="flex flex-col h-full p-6">
               <div className="flex justify-between items-center mb-8">
-                <span className="brand-logo font-bold text-2xl text-accent">CrimeRakshak</span>
+                <span className="brand-logo font-bold text-3xl text-accent">CrimeRakshak</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-text-muted hover:text-text-primary bg-white/5 rounded-full">
                   <X className="h-6 w-6" />
                 </button>

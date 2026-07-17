@@ -16,7 +16,7 @@ export function TrustMarquee() {
   const marqueeItems = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS];
 
   return (
-    <section className="py-12 md:py-16 border-y border-surface-border bg-bg-elevated overflow-hidden">
+    <section className="py-12 md:py-16 border-b border-surface-border bg-bg-elevated overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-8">
         <MicroLabel>Supporting Law Enforcement Across Karnataka</MicroLabel>
       </div>

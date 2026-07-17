@@ -3,14 +3,21 @@
    ================================================ */
 
 :root {
-  --auth-primary: #5D5FEF;
-  --auth-secondary: #93c5fd;
-  --auth-bg: #EBE8FE;
+  --auth-primary: #2563EB;
+  --auth-secondary: #1D4ED8;
+  --auth-bg: #EEF2F9;
 }
 
 /* ── Page wrapper ── */
 .auth-page-bg {
-  background-color: var(--auth-bg);
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(37, 99, 235, 0.12) 0%, transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(139, 92, 246, 0.12) 0%, transparent 55%),
+    linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)),
+    url('/detective-outer.jpg');
+  background-size: cover;
+  background-position: center;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -19,11 +26,7 @@
 
 /* ── Mesh background ── */
 .auth-mesh-bg {
-  background-image:
-    radial-gradient(circle at 10% 15%, rgba(147,197,253,0.45) 0%, transparent 65%),
-    radial-gradient(circle at 90% 10%, rgba(196,181,253,0.4) 0%, transparent 65%),
-    radial-gradient(circle at 30% 60%, rgba(167,139,250,0.25) 0%, transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(147,197,253,0.3) 0%, transparent 60%);
+  /* Ambient overlays handled directly in auth-page-bg to avoid CSS override */
 }
 
 /* ── Card wrapper ── */
@@ -115,12 +118,12 @@
 
 /* ── The gradient panel inside the overlay ── */
 .auth-overlay {
-  background-color: #6366f1;
+  background-color: #0f172a;
   background-image:
-    radial-gradient(circle at 0% 0%, #3b82f6 0%, transparent 60%),
-    radial-gradient(circle at 100% 0%, #a855f7 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, #4f46e5 0%, transparent 60%),
-    radial-gradient(circle at 0% 100%, #8b5cf6 0%, transparent 60%);
+    linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)),
+    url('/detective-board.png');
+  background-size: cover;
+  background-position: center;
   color: #ffffff;
   position: relative;
   left: -100%;
@@ -180,11 +183,11 @@
     width: 100%;
     height: 150%;
     z-index: 50;
-    background-color: #EBE8FE;
+    background-color: var(--auth-bg);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(147,197,253,0.8) 0%, transparent 65%),
-      radial-gradient(circle at 85% 15%, rgba(254,249,195,0.8) 0%, transparent 65%),
-      radial-gradient(circle at 50% 85%, rgba(196,181,253,0.8) 0%, transparent 70%);
+      radial-gradient(circle at 15% 20%, rgba(37,99,235,0.4) 0%, transparent 65%),
+      radial-gradient(circle at 85% 15%, rgba(196,181,253,0.4) 0%, transparent 65%),
+      radial-gradient(circle at 50% 85%, rgba(37,99,235,0.3) 0%, transparent 70%);
     top: calc(-150% + 40px);
     border-radius: 0 0 50% 50% / 0 0 40px 40px;
     transform: none !important;
