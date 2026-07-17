@@ -7,7 +7,7 @@ import "@/app/auth.css";
 
 // ── Input recipe (shared across all fields) ──
 const inputClass =
-  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-[#4B4DD9] transition-colors";
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-[#2563EB] transition-colors";
 
 interface UniversalAuthProps {
   defaultIsSignUp?: boolean;
@@ -109,7 +109,7 @@ export default function UniversalAuth({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
           <div className="relative flex flex-col items-center justify-center">
             <div className="relative flex items-center justify-center w-32 h-32 mb-8">
-              <div className="absolute inset-0 rounded-full border-4 border-[#4B4DD9]/20 border-t-[#4B4DD9] animate-spin drop-shadow-[0_0_15px_rgba(75,77,217,0.5)]" />
+              <div className="absolute inset-0 rounded-full border-4 border-[#2563EB]/20 border-t-[#2563EB] animate-spin drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
               <div className="absolute inset-4 rounded-full border-4 border-purple-500/20 border-b-purple-500 animate-[spin_1.5s_linear_reverse_infinite] drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
             </div>
             <div className="flex flex-col items-center">
@@ -140,11 +140,11 @@ export default function UniversalAuth({
           ═══════════════════════════════════════════ */}
       {showLongLoading && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 transition-all">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col p-6 animate-in zoom-in-95 duration-200 border-t-4 border-[#4B4DD9]">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col p-6 animate-in zoom-in-95 duration-200 border-t-4 border-[#2563EB]">
             <div className="flex flex-col items-center text-center gap-4">
               <Loader2
                 size={40}
-                className="animate-spin text-[#4B4DD9] shrink-0"
+                className="animate-spin text-[#2563EB] shrink-0"
               />
               <div>
                 <p className="font-bold text-lg text-slate-800">
@@ -233,7 +233,7 @@ export default function UniversalAuth({
                   <button
                     type="button"
                     onClick={() => setShowSignupPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4B4DD9] transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#2563EB] transition-colors"
                   >
                     {showSignupPassword ? (
                       <EyeOff size={18} />
@@ -255,7 +255,7 @@ export default function UniversalAuth({
                   <button
                     type="button"
                     onClick={() => setShowSignupConfirmPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4B4DD9] transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#2563EB] transition-colors"
                   >
                     {showSignupConfirmPassword ? (
                       <EyeOff size={18} />
@@ -269,7 +269,7 @@ export default function UniversalAuth({
               <button
                 type="submit"
                 disabled={signupLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#4B4DD9] px-4 py-3 font-semibold text-white hover:bg-[#3B3DB9] transition-all disabled:bg-[#3B3DB9] disabled:cursor-wait"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-4 py-3 font-semibold text-white hover:bg-[#1D4ED8] transition-all disabled:bg-[#1D4ED8] disabled:cursor-wait"
               >
                 {signupLoading ? "Creating Account..." : "Sign Up"}
               </button>
@@ -282,7 +282,7 @@ export default function UniversalAuth({
                   className="text-sm text-gray-500"
                 >
                   Already have an account?{" "}
-                  <span className="text-[#5D5FEF] font-medium">Sign In</span>
+                  <span className="text-[#2563EB] font-medium">Sign In</span>
                 </button>
               </div>
             </form>
@@ -325,7 +325,7 @@ export default function UniversalAuth({
                 <button
                   type="button"
                   onClick={() => setShowLoginPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4B4DD9] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#2563EB] transition-colors"
                 >
                   {showLoginPassword ? (
                     <EyeOff size={18} />
@@ -338,7 +338,7 @@ export default function UniversalAuth({
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#4B4DD9] px-4 py-3 mt-4 font-semibold text-white hover:bg-[#3B3DB9] transition-all shadow-md hover:shadow-lg disabled:bg-[#3B3DB9] disabled:cursor-wait"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-4 py-3 mt-4 font-semibold text-white hover:bg-[#1D4ED8] transition-all shadow-md hover:shadow-lg disabled:bg-[#1D4ED8] disabled:cursor-wait"
               >
                 {loginLoading ? "Signing In..." : "Sign In"}
               </button>
@@ -351,7 +351,7 @@ export default function UniversalAuth({
                   className="text-sm text-gray-500"
                 >
                   Don&apos;t have an account?{" "}
-                  <span className="text-[#5D5FEF] font-medium">Sign Up</span>
+                  <span className="text-[#2563EB] font-medium">Sign Up</span>
                 </button>
               </div>
             </form>
@@ -373,7 +373,7 @@ export default function UniversalAuth({
                 </p>
                 <button
                   onClick={() => togglePanel(false)}
-                  className="rounded-xl border-2 border-white px-12 py-3 font-semibold text-white hover:bg-white hover:text-[#4B4DD9] transition-colors shadow-sm"
+                  className="rounded-xl border-2 border-white px-12 py-3 font-semibold text-white hover:bg-white hover:text-[#2563EB] transition-colors shadow-sm"
                 >
                   Sign In
                 </button>
@@ -392,7 +392,7 @@ export default function UniversalAuth({
                 </p>
                 <button
                   onClick={() => togglePanel(true)}
-                  className="rounded-xl border-2 border-white px-12 py-3 font-semibold text-white hover:bg-white hover:text-[#4B4DD9] transition-colors shadow-sm"
+                  className="rounded-xl border-2 border-white px-12 py-3 font-semibold text-white hover:bg-white hover:text-[#2563EB] transition-colors shadow-sm"
                 >
                   Sign Up
                 </button>
