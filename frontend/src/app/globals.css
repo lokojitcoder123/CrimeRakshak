@@ -122,7 +122,7 @@
 
   /* Chart colors (Soft Jewel Palette) */
   --chart-1: #8b5cf6; /* Soft Indigo */
-  --chart-2: #6684f6; /* Current */
+  --chart-2: #10b981; /* Emerald Green (formerly blue) */
   --chart-3: #6ca79e; /* Prev Month */
   --chart-4: #84c2a3; /* Prev Year */
   --chart-5: #fb923c; /* Peach/Orange */
@@ -181,7 +181,7 @@
   --ring: #4f46e5;
 
   --chart-1: #7c3aed;
-  --chart-2: #6684f6;
+  --chart-2: #059669;
   --chart-3: #6ca79e;
   --chart-4: #84c2a3;
   --chart-5: #f59e0b;
