@@ -39,20 +39,24 @@ def main():
         pg_loader.close()
         
     # 2. Neo4j Ingestion & Synthetic Generation
-    n4j_loader = Neo4jLoader(neo4j_uri, neo4j_user, neo4j_pass)
-    try:
-        n4j_loader.connect()
-        if os.path.exists(district_csv):
-            n4j_loader.load_base_graph_from_csv(district_csv)
+    use_neo4j = os.getenv("USE_NEO4J", "true").lower() == "true"
+    if use_neo4j:
+        n4j_loader = Neo4jLoader(neo4j_uri, neo4j_user, neo4j_pass)
+        try:
+            n4j_loader.connect()
+            if os.path.exists(district_csv):
+                n4j_loader.load_base_graph_from_csv(district_csv)
+                
+            # 3. Synthetic Data
+            synth_gen = SyntheticGenerator(n4j_loader.driver)
+            synth_gen.generate_synthetic_graph(num_persons=100, num_firs=30)
             
-        # 3. Synthetic Data
-        synth_gen = SyntheticGenerator(n4j_loader.driver)
-        synth_gen.generate_synthetic_graph(num_persons=100, num_firs=30)
-        
-    except Exception as e:
-        logger.error(f"Neo4j pipeline failed: {e}")
-    finally:
-        n4j_loader.close()
+        except Exception as e:
+            logger.error(f"Neo4j pipeline failed: {e}")
+        finally:
+            n4j_loader.close()
+    else:
+        logger.info("Neo4j pipeline skipped (USE_NEO4J=False).")
         
     logger.info("Data Ingestion Pipeline Completed.")
 

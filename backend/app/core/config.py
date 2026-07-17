@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     # ── Neo4j (Graph Intelligence) ──
     # Same variable names as the ingestion pipeline (see backend/ingest.py) so
     # the API and the loaders talk to the same graph database.
+    USE_NEO4J: bool = True
     NEO4J_URI: str = "bolt://localhost:7687"
     NEO4J_USER: str = "neo4j"
     NEO4J_PASSWORD: str = "password"
