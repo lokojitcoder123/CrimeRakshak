@@ -97,6 +97,8 @@ class Neo4jConnectionManager:
         return self._driver  # type: ignore[return-value]
 
     def connect(self) -> None:
+        if not settings.USE_NEO4J:
+            raise GraphConnectionError("Neo4j is disabled in settings (USE_NEO4J=False)")
         if self._driver is not None:
             return
         try:
@@ -119,6 +121,9 @@ class Neo4jConnectionManager:
 
     def verify_connectivity(self) -> bool:
         """Ping the server. Returns ``True`` if reachable, else ``False``."""
+        if not settings.USE_NEO4J:
+            logger.info("Neo4j connectivity check skipped (disabled in settings)")
+            return False
         try:
             self.driver.verify_connectivity()
             return True

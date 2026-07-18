@@ -185,11 +185,18 @@ def main():
     
     postgres_success = init_postgres()
     print("----------------------------------------")
-    neo4j_success = init_neo4j()
+    
+    use_neo4j = os.getenv("USE_NEO4J", "true").lower() == "true"
+    if use_neo4j:
+        neo4j_success = init_neo4j()
+    else:
+        print("Neo4j database initialization skipped (USE_NEO4J=False).")
+        neo4j_success = True
+        
     print("========================================")
     
     if postgres_success and neo4j_success:
-        print("SUCCESS: All databases initialized successfully!")
+        print("SUCCESS: Database initialization completed successfully!")
         sys.exit(0)
     else:
         print("ERROR: Database initialization failed.")
