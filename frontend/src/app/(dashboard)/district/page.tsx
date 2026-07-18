@@ -16,6 +16,7 @@ import {
 import { brandColors, chartPalette } from "@/lib/design-tokens";
 import { Search, ArrowUpDown } from "lucide-react";
 import { useLanguage } from "@/components/LanguageContext";
+import { SllEnforcementBenchmark } from "./_components/SllEnforcementBenchmark";
 
 export default function DistrictPage() {
   const { t } = useLanguage();
@@ -54,10 +55,15 @@ export default function DistrictPage() {
   return (
     <div className="px-4 md:px-6 lg:px-8 pb-8 pt-2 md:pt-4 space-y-6 ">
       <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, ease: "easeOut" }}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-widest uppercase bg-brand-purple/10 text-brand-purple border border-brand-purple/20">
+            {t("GRANULAR JURISDICTION & RANGE DECOMPOSITION")}
+          </span>
+        </div>
         <h1 className="text-2xl md:text-4xl font-heading font-bold text-brand-purple">
           {t("District Analysis")}
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm md:text-base">{t("IPC vs SLL breakdown by district and police range")}</p>
+        <p className="text-muted-foreground mt-1 text-sm md:text-base">{t("IPC vs SLL breakdown by district and police range across Karnataka")}</p>
       </motion.div>
 
       {/* Range Filters */}
@@ -72,7 +78,7 @@ export default function DistrictPage() {
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="glass-card lg:col-span-3 relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
-          <CardHeader className="relative"><CardTitle className="font-heading text-base">{t("IPC vs SLL by District")}</CardTitle></CardHeader>
+          <CardHeader className="relative"><CardTitle className="font-heading text-base flex items-center justify-between gap-2">{t("IPC vs SLL by District")}<span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">2025 Annual Baseline</span></CardTitle></CardHeader>
           <CardContent className="relative">
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -103,7 +109,7 @@ export default function DistrictPage() {
         </Card>
         <Card className="glass-card lg:col-span-2 relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
-          <CardHeader className="relative"><CardTitle className="font-heading text-base">{t("Range Share")}</CardTitle></CardHeader>
+          <CardHeader className="relative"><CardTitle className="font-heading text-base flex items-center justify-between gap-2">{t("Range Share")}<span className="text-xs font-semibold text-brand-blue bg-brand-blue/10 px-2.5 py-1 rounded-full border border-brand-blue/20 ml-auto">2025 Volume Distribution</span></CardTitle></CardHeader>
           <CardContent className="relative">
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -136,11 +142,16 @@ export default function DistrictPage() {
         </Card>
       </div>
 
+      {/* COTPA & SLL Proactive Enforcement Index */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+        <SllEnforcementBenchmark />
+      </motion.div>
+
       {/* Table */}
       <Card className="glass-card relative overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:border-brand-purple/20 hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 relative">
-          <CardTitle className="font-heading text-base">{t("District Table")}</CardTitle>
+          <CardTitle className="font-heading text-base flex items-center gap-2">{t("District Table")}<span className="text-xs font-semibold text-brand-teal bg-brand-teal/10 px-2.5 py-1 rounded-full border border-brand-teal/20 ml-2">2025 Annual Telemetry</span></CardTitle>
           <div className="relative max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder={t("Search districts, crimes…")} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />

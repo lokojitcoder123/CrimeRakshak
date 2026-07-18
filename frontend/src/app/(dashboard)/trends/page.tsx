@@ -12,6 +12,11 @@ import { brandColors, chartPalette } from "@/lib/design-tokens";
 import { TrendingUp, TrendingDown, Sparkles, Filter, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/LanguageContext";
+import SeasonalHeatGrid from "./_components/SeasonalHeatGrid";
+import DistrictHotspotTable from "./_components/DistrictHotspotTable";
+import EmergingClusterAlerts from "./_components/EmergingClusterAlerts";
+import CrimeCategoryBreakdown from "./_components/CrimeCategoryBreakdown";
+import { DecadalLongitudinalChart } from "./_components/DecadalLongitudinalChart";
 
 export default function TrendsPage() {
   const { t } = useLanguage();
@@ -31,10 +36,15 @@ export default function TrendsPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, ease: "easeOut" }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-widest uppercase bg-brand-purple/10 text-brand-purple border border-brand-purple/20">
+              {t("LONGITUDINAL TEMPORAL & SEASONAL PATTERN ANALYTICS")}
+            </span>
+          </div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold text-brand-purple">
             {t("Trend Analysis")}
           </h1>
-          <p className="text-muted-foreground mt-1">{t("Monthly and seasonal crime trend patterns")}</p>
+          <p className="text-muted-foreground mt-1">{t("Monthly, seasonal & decadal crime trend trajectories across Karnataka")}</p>
         </motion.div>
         
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="flex items-center gap-2">
@@ -60,11 +70,16 @@ export default function TrendsPage() {
             <div>
               <h3 className="font-heading font-bold text-lg text-foreground">{t("AI Trend Summary")}</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="font-semibold text-brand-red">{t("Cyber Crimes")}</span> {t("and")} <span className="font-semibold text-brand-amber">{t("Kidnapping")}</span> {t("are showing significant month-over-month increases. However,")} <span className="font-semibold text-brand-green">{t("Hurt/Grievous Hurt")}</span> {t("incidents have decreased by 3.6% in the last 30 days. Recommend increased cyber awareness campaigns.")}
+                <span className="font-semibold text-brand-red">{t("NDPS Cases")}</span> {t("surged +53.7% (909 → 1,397) and")} <span className="font-semibold text-brand-amber">{t("SLL Cases")}</span> {t("rose +2.6% month-over-month. However,")} <span className="font-semibold text-brand-green">{t("POCSO")}</span> {t("cases dropped 28.2% and")} <span className="font-semibold text-brand-green">{t("Economic Offences")}</span> {t("declined 33.8%. Recommend intensified NDPS enforcement in urban corridors.")}
               </p>
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* 25-Year Longitudinal Decadal Forecasting & Telemetry */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+        <DecadalLongitudinalChart />
       </motion.div>
 
       {/* Peak Season Callouts */}
@@ -106,7 +121,7 @@ export default function TrendsPage() {
             <CardHeader>
               <CardTitle className="font-heading text-base flex items-center justify-between">
                 <span>{t("Month-over-Month Shift")}</span>
-                <span className="text-xs font-normal text-muted-foreground">{t("Previous vs Current")}</span>
+                <span className="text-xs font-semibold text-brand-yellow bg-brand-yellow/10 px-2.5 py-0.5 rounded-full border border-brand-yellow/20">Nov 2025 vs Dec 2025</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1">
@@ -146,7 +161,7 @@ export default function TrendsPage() {
             <CardHeader>
               <CardTitle className="font-heading text-base flex items-center justify-between">
                 <span>{t("Year-to-Date Volume")}</span>
-                <span className="text-xs font-normal text-muted-foreground">{t("Cumulative")}</span>
+                <span className="text-xs font-semibold text-brand-red bg-brand-red/10 px-2.5 py-0.5 rounded-full border border-brand-red/20">2025 Cumulative YTD</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1">
@@ -179,9 +194,12 @@ export default function TrendsPage() {
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
         <Card className="glass-card hover:!transform-none">
           <CardHeader className="border-b border-border/50 pb-4">
-            <CardTitle className="font-heading text-base flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand-purple" />
-              {t("Detailed Metric Changes")}
+            <CardTitle className="font-heading text-base flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-brand-purple" />
+                {t("Detailed Metric Changes")}
+              </div>
+              <span className="text-xs font-semibold text-brand-purple bg-brand-purple/10 px-2.5 py-1 rounded-full border border-brand-purple/20 ml-auto">Nov 2025 → Dec 2025 Audit</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -190,8 +208,8 @@ export default function TrendsPage() {
                 <thead>
                   <tr className="bg-muted/20 text-muted-foreground border-b border-border/50">
                     <th className="text-left py-4 px-6 font-medium">{t("Crime Category")}</th>
-                    <th className="text-right py-4 px-6 font-medium">{t("Previous Month")}</th>
-                    <th className="text-right py-4 px-6 font-medium">{t("Current Month")}</th>
+                    <th className="text-right py-4 px-6 font-medium">{t("Previous Month (Nov 2025)")}</th>
+                    <th className="text-right py-4 px-6 font-medium">{t("Current Month (Dec 2025)")}</th>
                     <th className="text-right py-4 px-6 font-medium">{t("Trend Indicator")}</th>
                     <th className="text-right py-4 px-6 font-medium">{t("Change")}</th>
                   </tr>
@@ -231,6 +249,20 @@ export default function TrendsPage() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* ─── Feature 3: Crime Pattern & Trend Analytics ─── */}
+
+      {/* Seasonal Crime Heat Grid */}
+      <SeasonalHeatGrid />
+
+      {/* Emerging Crime Cluster Alerts */}
+      <EmergingClusterAlerts />
+
+      {/* District Crime Hotspot Ranking */}
+      <DistrictHotspotTable />
+
+      {/* Crime Category Composition */}
+      <CrimeCategoryBreakdown />
     </div>
   );
 }

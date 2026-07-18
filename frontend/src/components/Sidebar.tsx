@@ -113,15 +113,15 @@ export function Sidebar() {
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? (
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(30,64,175,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(30,64,175,0.5)] transition-all duration-300">
                 <Shield className="h-5 w-5 text-white" />
               </div>
             ) : (
               <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300 transform origin-left min-w-0">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] flex items-center justify-center flex-shrink-0 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] flex items-center justify-center flex-shrink-0 shadow-[0_0_10px_rgba(30,64,175,0.3)]">
                   <Shield className="h-4 w-4 text-white" />
                 </div>
-                <span className="brand-logo font-black text-xl tracking-tight bg-gradient-to-r from-[#8B5CF6] via-[#A78BFA] to-[#6366F1] text-transparent bg-clip-text drop-shadow-sm whitespace-nowrap truncate min-w-0">
+                <span className="brand-logo font-black text-xl tracking-tight bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] text-transparent bg-clip-text drop-shadow-sm whitespace-nowrap truncate min-w-0">
                   {t("CrimeRakshak")}
                 </span>
               </div>
