@@ -86,6 +86,7 @@ if %ERRORLEVEL% neq 0 (
     echo [WARNING] Data ingestion pipeline failed. Moving forward...
 )
 
+call :doduck
 cd /d "%~dp0"
 goto startservers
 
@@ -118,11 +119,30 @@ python ingest.py
 if %ERRORLEVEL% neq 0 (
     echo [WARNING] Data ingestion pipeline failed.
 )
+call :doduck
 cd /d "%~dp0"
 echo.
 echo Database setup completed successfully!
 pause
 goto menu
+
+:: Subroutine: synthetic case data + DuckDB analytics database.
+:: Run from backend dir with venv active. Powers chat, analytics, network,
+:: forecasting AND the financial-crime module (case_transactions).
+:doduck
+echo.
+echo === Generating Synthetic Case Data (cases, people, accounts, transactions) ===
+python -m app.chat.data.case_generator
+if %ERRORLEVEL% neq 0 (
+    echo [WARNING] Synthetic case generation failed.
+)
+echo.
+echo === Building DuckDB Analytics Database (crime_stats.duckdb, 13 tables) ===
+python -m app.chat.data.loader
+if %ERRORLEVEL% neq 0 (
+    echo [WARNING] DuckDB build failed - chat/analytics/financial APIs may 503.
+)
+exit /b 0
 
 :installdeps
 call :dodeps
@@ -166,6 +186,16 @@ if %ERRORLEVEL% neq 0 (
     echo ML dependencies OK.
 )
 
+echo === Preflight: DuckDB analytics data ===
+"%~dp0backend\venv\Scripts\python.exe" -c "import duckdb; con = duckdb.connect(r'%~dp0backend\crime_stats.duckdb', read_only=True); con.execute('SELECT 1 FROM case_transactions LIMIT 1'); con.close()" >nul 2>&1
+if %ERRORLEVEL% neq 0 (
+    echo [WARNING] crime_stats.duckdb missing or lacks case_transactions -
+    echo           chat/analytics/financial APIs will return 503.
+    echo           Run option [3] Database Setup to build it.
+) else (
+    echo DuckDB data OK - financial transaction ledger present.
+)
+
 echo.
 echo === Launching FastAPI Backend ===
 start "CrimeRakshak Backend" cmd /c "%~dp0_run-backend.bat"
@@ -179,6 +209,9 @@ echo - Backend:        http://localhost:8000
 echo - Frontend:       http://localhost:3000
 echo - Forecast API:   POST http://localhost:8000/api/v1/predict
 echo - Early Warning:  GET  http://localhost:8000/api/v1/predict/early-warning
+echo - Financial API:  GET  http://localhost:8000/api/v1/financial/suspicious
+echo - Money Trail:    GET  http://localhost:8000/api/v1/financial/money-trail
+echo - Chat + Trace:   POST http://localhost:8000/api/v1/chat  (Explainable AI)
 echo.
 echo Feel free to close this menu.
 pause

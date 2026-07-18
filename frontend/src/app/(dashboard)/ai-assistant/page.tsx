@@ -123,9 +123,9 @@ export default function AIAssistantPage() {
     setLoading(true);
 
     try {
-      const { answer } = await callChat(q);
+      const { answer, sources } = await callChat(q);
       let content = answer;
-      const assistantMsg: ChatMessage = { role: "assistant", content, timestamp: new Date() };
+      const assistantMsg: ChatMessage = { role: "assistant", content, sources, timestamp: new Date() };
       const finalMessages = [...updatedMessages, assistantMsg];
       
       setMessages(finalMessages);
@@ -358,13 +358,26 @@ export default function AIAssistantPage() {
                     {msg.content === GREETING ? t(GREETING) : msg.content}
                   </div>
                   {msg.role === "assistant" && (
-                    <button
-                      onClick={() => handleListen(i, msg.content)}
-                      className="text-xs text-brand-purple hover:underline flex items-center gap-1 px-1"
-                    >
-                      {speakingIdx === i ? <Square className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}
-                      {speakingIdx === i ? t("Stop") : t("Listen")}
-                    </button>
+                    <div className="flex items-center gap-4 px-1 mt-1 flex-wrap">
+                      <button
+                        onClick={() => handleListen(i, msg.content)}
+                        className="text-xs text-brand-purple hover:underline flex items-center gap-1"
+                      >
+                        {speakingIdx === i ? <Square className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}
+                        {speakingIdx === i ? t("Stop") : t("Listen")}
+                      </button>
+                      
+                      {msg.sources && msg.sources.length > 0 && (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">{t("Evidence Trail:")}</span>
+                          {msg.sources.map((src, idx) => (
+                            <span key={idx} className="text-[10px] bg-brand-teal/10 text-brand-teal border border-brand-teal/20 px-1.5 py-0.5 rounded font-mono">
+                              {src}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
                 {msg.role === "user" && (
