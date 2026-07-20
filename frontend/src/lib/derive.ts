@@ -17,19 +17,19 @@ import type { RiskTier } from "@/lib/design-tokens";
  */
 export function getRiskTier(district: District): RiskTier {
   const total = district.ipc + district.sll;
-  if (total > 20000) return "Critical";
-  if (total > 8000) return "High";
-  if (total > 4000) return "Moderate";
+  if (total >= 9000) return "Critical";
+  if (total >= 5200) return "High";
+  if (total >= 3800) return "Moderate";
   return "Safe";
 }
 
 /**
  * Get risk score (0-100) for a district.
  */
-export function getRiskScore(district: District): number {
+export function getRiskScore(district: District, sourceList: District[] = districts): number {
   const total = district.ipc + district.sll;
-  const maxTotal = Math.max(...districts.map((d) => d.ipc + d.sll));
-  return Math.round((total / maxTotal) * 100);
+  const maxTotal = Math.max(...sourceList.map((d) => d.ipc + d.sll));
+  return Math.round((total / (maxTotal || 1)) * 100);
 }
 
 /**
@@ -37,9 +37,10 @@ export function getRiskScore(district: District): number {
  */
 export function getTopDistricts(
   n: number,
-  key: "ipc" | "sll" | "total" = "total"
+  key: "ipc" | "sll" | "total" = "total",
+  sourceList: District[] = districts
 ): District[] {
-  return [...districts]
+  return [...sourceList]
     .sort((a, b) => {
       const aVal = key === "total" ? a.ipc + a.sll : a[key];
       const bVal = key === "total" ? b.ipc + b.sll : b[key];
@@ -51,8 +52,8 @@ export function getTopDistricts(
 /**
  * Get safest N districts.
  */
-export function getSafestDistricts(n: number): District[] {
-  return [...districts]
+export function getSafestDistricts(n: number, sourceList: District[] = districts): District[] {
+  return [...sourceList]
     .sort((a, b) => a.ipc + a.sll - (b.ipc + b.sll))
     .slice(0, n);
 }

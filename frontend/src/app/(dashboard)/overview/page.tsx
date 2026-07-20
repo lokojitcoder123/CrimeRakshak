@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+<<<<<<< HEAD
 import { useUser } from "@clerk/nextjs";
+=======
+>>>>>>> fede04d93bc72dcc461c6be3012b5190aa29350b
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,11 +38,16 @@ const RANGES = [
 
 export default function OverviewPage() {
   const { t } = useLanguage();
+<<<<<<< HEAD
   const { user } = useUser();
   const [selectedRange, setSelectedRange] = useState<string>("All Karnataka");
 
   const userName = user?.firstName || user?.fullName || "Officer";
 
+=======
+  const [selectedRange, setSelectedRange] = useState<string>("All Karnataka");
+
+>>>>>>> fede04d93bc72dcc461c6be3012b5190aa29350b
   const baseKpis = useMemo(() => getOverviewKPIs(), []);
 
   // Calculate dynamic KPIs based on selected range

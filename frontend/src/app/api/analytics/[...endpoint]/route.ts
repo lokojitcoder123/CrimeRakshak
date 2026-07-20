@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://127.0.0.1:8001";
 
+
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ endpoint: string[] }> }
