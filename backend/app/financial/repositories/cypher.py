@@ -46,10 +46,7 @@ WITH b, collect(DISTINCT linked) AS tx_linked
 OPTIONAL MATCH (owner:Person)-[:OWNS_ACCOUNT]->(b)
 OPTIONAL MATCH (owner)-[:OWNS_ACCOUNT]->(co:BankAccount)
 WHERE co.account_no <> $account_no
-// Aggregate co-owned accounts BEFORE concatenating: Neo4j 5 rejects mixing a
-// grouping expression (tx_linked) with an aggregation in the same RETURN.
-WITH tx_linked, collect(DISTINCT co) AS co_owned
-RETURN tx_linked + co_owned AS linked
+RETURN tx_linked + collect(DISTINCT co) AS linked
 """
 
 # ── Person ↔ BankAccount ↔ Transaction traversal ───────────────────────────

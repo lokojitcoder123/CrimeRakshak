@@ -10,7 +10,6 @@ Crime routers are intentionally out of scope for this step; their protected
 placeholders live in ``app/routers/protected.py``.
 """
 from fastapi import FastAPI, Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -20,7 +19,8 @@ from app.core.exceptions import AppHTTPException
 from app.core.logging import get_logger
 from app.financial.routers import financial as financial_router
 from app.graph.routers import graph as graph_router
-from app.routers import admin, auth, protected
+from app.chat.router import router as chat_router
+from app.routers import admin, analytics, auth, network, predict, protected
 
 logger = get_logger("api")
 
@@ -61,11 +61,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "error": {
                 "code": "validation_error",
                 "message": "request validation failed",
-                # jsonable_encoder: error dicts may embed non-JSON-serializable
-                # values (e.g. the raw ``bytes`` body when a form-encoded payload
-                # is sent to a JSON endpoint) — plain exc.errors() would make
-                # JSONResponse raise and turn this 422 into a 500.
-                "details": jsonable_encoder(exc.errors()),
+                "details": exc.errors(),
             }
         },
     )
@@ -76,10 +72,26 @@ app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin.router, prefix=settings.API_V1_PREFIX)
 app.include_router(protected.router, prefix=settings.API_V1_PREFIX)
 app.include_router(graph_router.router, prefix=settings.API_V1_PREFIX)
+app.include_router(chat_router, prefix=settings.API_V1_PREFIX)
 app.include_router(financial_router.router, prefix=settings.API_V1_PREFIX)
+app.include_router(analytics.router, prefix=settings.API_V1_PREFIX)
+app.include_router(network.router, prefix=settings.API_V1_PREFIX)
+app.include_router(predict.router, prefix=settings.API_V1_PREFIX)
 
 
 # ── Lifecycle ─────────────────────────────────────────────────────────────
+@app.on_event("startup")
+def _startup_seed() -> None:
+    """Seed the database with default roles, permissions, and the superuser on startup."""
+    from app.seed import seed
+    try:
+        logger.info("Running automatic DB seeding on startup...")
+        seed()
+        logger.info("Automatic DB seeding completed.")
+    except Exception as e:
+        logger.error(f"Failed to auto-seed database: {e}")
+
+
 @app.on_event("shutdown")
 def _shutdown_graph() -> None:
     """Close the shared Neo4j driver cleanly on application shutdown."""

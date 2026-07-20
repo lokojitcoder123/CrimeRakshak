@@ -9,7 +9,8 @@ from functools import lru_cache
 from typing import List
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from typing_extensions import Annotated
 
 
 class Settings(BaseSettings):
@@ -32,6 +33,7 @@ class Settings(BaseSettings):
     # ── JWT / Auth ──
     # SECRET_KEY MUST be overridden in production via the environment.
     SECRET_KEY: str = "CHANGE_ME_IN_PRODUCTION_use_openssl_rand_hex_32"
+    CLERK_SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -41,6 +43,7 @@ class Settings(BaseSettings):
     # ── Neo4j (Graph Intelligence) ──
     # Same variable names as the ingestion pipeline (see backend/ingest.py) so
     # the API and the loaders talk to the same graph database.
+    USE_NEO4J: bool = True
     NEO4J_URI: str = "bolt://localhost:7687"
     NEO4J_USER: str = "neo4j"
     NEO4J_PASSWORD: str = "password"
@@ -51,6 +54,30 @@ class Settings(BaseSettings):
     # Max hops permitted for full-network traversal and path search.
     GRAPH_MAX_DEPTH: int = 5
 
+    # ── LLM provider ──
+    # "gemini" (Google Generative Language, OpenAI-compat) or "openrouter".
+    LLM_PROVIDER: str = "gemini"
+
+    # OpenRouter (used when LLM_PROVIDER == "openrouter").
+    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+
+    # Google Gemini (used when LLM_PROVIDER == "gemini").
+    GEMINI_API_KEY: str = ""
+    GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+    # Model used for tool-calling / reasoning (agent core).
+    LLM_AGENT_MODEL: str = "gemini-flash-lite-latest"
+    # Model used for fluent answer/summary generation (Kannada-capable).
+    LLM_SUMMARY_MODEL: str = "gemini-flash-lite-latest"
+    # Cap on output tokens per call (keeps cost bounded on metered accounts).
+    LLM_MAX_TOKENS: int = 1024
+
+    # ── CSV analytics (DuckDB) ──
+    # Directory holding the KSP CSV datasets and the on-disk DuckDB file.
+    DATASETS_DIR: str = "../datasets"
+    DUCKDB_PATH: str = "crime_stats.duckdb"
+
     # ── Security policy ──
     PASSWORD_MIN_LENGTH: int = 8
     # Wrong-password attempts before an account is temporarily locked.
@@ -59,7 +86,7 @@ class Settings(BaseSettings):
 
     # ── CORS ──
     # Comma-separated list in the environment, e.g. "http://localhost:3000".
-    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: Annotated[List[str], NoDecode] = ["http://localhost:3000"]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
@@ -74,6 +101,12 @@ class Settings(BaseSettings):
         uri = self.POSTGRES_URI
         if uri.startswith("postgresql://"):
             uri = uri.replace("postgresql://", "postgresql+psycopg2://", 1)
+        
+        # Remove pgbouncer=true because psycopg2 doesn't support it in the DSN
+        uri = uri.replace("?pgbouncer=true&", "?")
+        uri = uri.replace("?pgbouncer=true", "")
+        uri = uri.replace("&pgbouncer=true", "")
+        
         return uri
 
 

@@ -5,13 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { districts, ipcCrimes } from "@/data/crimeData";
-import { runPrediction, type PredictionResult } from "@/lib/predict";
+import { runPrediction, type PredictionInput, type PredictionResult } from "@/lib/predict";
+import { fetchAPI } from "@/lib/apiClient";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
-import {
-  Brain, AlertTriangle, Target, BarChart3, Activity, Calendar, Zap, Sparkles,
-  Loader2, Cpu, Network, CloudLightning, Crosshair, MapPin, ShieldAlert,
-  ShieldCheck, Server, Eye, Terminal, ChevronRight
+import { 
+  Brain, Target, Activity, MapPin, AlertTriangle, Cpu, TrendingUp, Calendar, 
+  BarChart3, Zap, Filter, Loader2, Sparkles, Server, Crosshair, ShieldCheck,
+  Terminal, ChevronRight, Download, Search, Database, CloudRain, Network
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { brandColors } from "@/lib/design-tokens";
@@ -32,10 +33,27 @@ const simLogs = [
   "PREDICTION COMPLETE."
 ];
 
+// Extra metadata returned by the real ML backend (absent in offline simulation).
+interface PredictionMeta {
+  engine: string;
+  modelType: string;
+  resolvedDistrict: string | null;
+  resolvedCrimeType: string | null;
+  aggregationLevel: string;
+  escalated: boolean;
+  modeledSeries: string;
+  backtestSMAPE: number;
+  trainingMonths: number;
+  pooledSeries: number;
+  isSynthetic: boolean;
+}
+
+type BackendPrediction = PredictionResult & { meta?: PredictionMeta };
+
 export default function AIPredictionPage() {
   const { t } = useLanguage();
-  const [district, setDistrict] = useState("");
-  const [crimeType, setCrimeType] = useState("");
+  const [district, setDistrict] = useState("Bengaluru City");
+  const [crimeType, setCrimeType] = useState("Theft");
   const [modelType, setModelType] = useState<"LSTM" | "XGBoost" | "Prophet">("LSTM");
   const [months, setMonths] = useState(3);
   const [includeEnvironmental, setIncludeEnvironmental] = useState(true);
@@ -43,32 +61,79 @@ export default function AIPredictionPage() {
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
-  const [result, setResult] = useState<PredictionResult | null>(null);
+  const [source, setSource] = useState<"live" | "simulated">("simulated");
+  const [meta, setMeta] = useState<PredictionMeta | null>(null);
+  const [result, setResult] = useState<PredictionResult | null>(() =>
+    runPrediction({
+      district: "Bengaluru City",
+      crimeType: "Theft",
+      months: 3,
+      modelType: "LSTM",
+      includeEnvironmental: true,
+      includeEvents: false,
+    })
+  );
+
+  // Call the real ML backend; fall back to the client-side simulation offline.
+  const executePrediction = async (input: PredictionInput, showTerminal: boolean) => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (showTerminal) {
+      setIsAnalyzing(true);
+      setResult(null);
+      setLogs([]);
+      let logIndex = 0;
+      interval = setInterval(() => {
+        if (logIndex < simLogs.length) {
+          const currentLog = simLogs[logIndex];
+          setLogs(prev => [...prev, currentLog]);
+          logIndex++;
+        }
+      }, 150);
+    }
+    try {
+      const data: BackendPrediction = await fetchAPI("/predict", {
+        method: "POST",
+        body: JSON.stringify(input),
+      });
+      setResult(data);
+      setMeta(data.meta ?? null);
+      setSource("live");
+    } catch {
+      setResult(runPrediction(input));
+      setMeta(null);
+      setSource("simulated");
+    } finally {
+      if (interval) clearInterval(interval);
+      if (showTerminal) setIsAnalyzing(false);
+    }
+  };
+
+  // Replace the initial simulated result with a live forecast once on mount.
+  useEffect(() => {
+    executePrediction(
+      { district: "Bengaluru City", crimeType: "Theft", months: 3, modelType: "LSTM", includeEnvironmental: true, includeEvents: false },
+      false
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlePredict = () => {
     if (!district || !crimeType) return;
-    setIsAnalyzing(true);
-    setResult(null);
-    setLogs([]);
-    
-    // Simulate terminal logs over time
-    let logIndex = 0;
-    const interval = setInterval(() => {
-      setLogs(prev => [...prev, simLogs[logIndex]]);
-      logIndex++;
-      if (logIndex >= simLogs.length) {
-        clearInterval(interval);
-        setResult(runPrediction({ 
-          district, 
-          crimeType, 
-          months, 
-          modelType,
-          includeEnvironmental, 
-          includeEvents 
-        }));
-        setIsAnalyzing(false);
-      }
-    }, 200);
+    executePrediction({ district, crimeType, months, modelType, includeEnvironmental, includeEvents }, true);
+  };
+
+  const applyPreset = (presetDist: string, presetCrime: string, presetModel: "LSTM" | "XGBoost" | "Prophet") => {
+    setDistrict(presetDist);
+    setCrimeType(presetCrime);
+    setModelType(presetModel);
+    executePrediction({
+      district: presetDist,
+      crimeType: presetCrime,
+      months,
+      modelType: presetModel,
+      includeEnvironmental,
+      includeEvents,
+    }, true);
   };
 
   const getTierColor = (tier: string) => {
@@ -91,6 +156,16 @@ export default function AIPredictionPage() {
           {t("Predictive Command Center")}
         </h1>
         <p className="text-muted-foreground mt-3 text-base">{t("Multi-model AI forecasting, resource allocation, and spatial hotspot identification.")}</p>
+        <div className={`mt-2 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+          source === "live"
+            ? "text-brand-teal border-brand-teal/30 bg-brand-teal/10"
+            : "text-brand-amber border-brand-amber/30 bg-brand-amber/10"
+        }`}>
+          <Server className="h-3 w-3" />
+          {source === "live"
+            ? `${t("Live ML Backend")}${meta ? ` — ${meta.engine}` : ""}`
+            : t("Offline Simulation (backend unreachable)")}
+        </div>
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-12 items-start">
@@ -104,6 +179,53 @@ export default function AIPredictionPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
+              {/* Quick Preset Scenarios */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3 text-brand-purple" /> {t("Regional Archetype Presets")}
+                  </label>
+                  <span className="text-[9px] font-semibold text-muted-foreground">{t("All 37 Dist. Below")}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    onClick={() => applyPreset("Bengaluru City", "Theft", "LSTM")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    ⚡ {t("Bengaluru (Metropolitan)")}
+                  </button>
+                  <button
+                    onClick={() => applyPreset("Kalaburagi City", "Hurt/Grievous Hurt", "XGBoost")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    🔥 {t("Kalaburagi (North-East)")}
+                  </button>
+                  <button
+                    onClick={() => applyPreset("Hubli-Dharwad City", "Cheating", "Prophet")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    🏙️ {t("Hubballi-Dharwad (North)")}
+                  </button>
+                  <button
+                    onClick={() => applyPreset("Mysuru City", "Cheating", "Prophet")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    💻 {t("Mysuru (Southern IT)")}
+                  </button>
+                  <button
+                    onClick={() => applyPreset("Mangaluru City", "Hurt/Grievous Hurt", "XGBoost")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    🌊 {t("Mangaluru (Coastal Port)")}
+                  </button>
+                  <button
+                    onClick={() => applyPreset("Ballari", "Theft", "LSTM")}
+                    className="px-2.5 py-1.5 rounded-lg border border-border/60 bg-muted/20 hover:bg-brand-purple/10 text-xs font-semibold text-left flex items-center gap-1.5 transition-all"
+                  >
+                    🚨 {t("Ballari (Mining Belt)")}
+                  </button>
+                </div>
+              </div>
               
               {/* Target Vectors */}
               <div className="space-y-4">
@@ -235,7 +357,7 @@ export default function AIPredictionPage() {
                     {logs.map((log, index) => (
                       <motion.div key={index} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex gap-3 text-brand-teal/80">
                         <span className="text-muted-foreground/50 opacity-50">[{new Date().toISOString().split('T')[1].substring(0,8)}]</span>
-                        <span className={log.includes("ERROR") ? "text-brand-red" : log.includes("COMPLETE") ? "text-brand-purple font-bold" : ""}>{log}</span>
+                        <span className={log?.includes("ERROR") ? "text-brand-red" : log?.includes("COMPLETE") ? "text-brand-purple font-bold" : ""}>{log}</span>
                       </motion.div>
                     ))}
                     <div className="flex items-center gap-2 text-brand-purple mt-4">
@@ -308,9 +430,16 @@ export default function AIPredictionPage() {
                   <Card className="glass-card overflow-hidden">
                     <CardHeader className="border-b border-border/50 bg-muted/10 pb-3 pt-4 px-5">
                       <div className="flex justify-between items-center">
-                        <CardTitle className="font-heading text-base flex items-center gap-2">
-                          <Activity className="h-4 w-4 text-brand-blue" /> {t("Forecast Trajectory")}
-                        </CardTitle>
+                        <div>
+                          <CardTitle className="font-heading text-base flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-brand-blue" /> {t("Forecast Trajectory")}
+                          </CardTitle>
+                          {meta && (
+                            <p className="text-[10px] text-muted-foreground mt-1 font-mono">
+                              {t("Modeled")}: {meta.modeledSeries} · {meta.trainingMonths} {t("mo. history")} · {t("backtest sMAPE")} {meta.backtestSMAPE}%{meta.isSynthetic ? ` · ${t("synthetic data")}` : ""}
+                            </p>
+                          )}
+                        </div>
                         <div className="flex gap-4 text-[10px] font-semibold font-mono text-muted-foreground">
                           <span className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-muted-foreground" /> {t("Actual")}</span>
                           <span className="flex items-center gap-1.5"><div className="w-3 h-0.5 border-t-2 border-dashed border-brand-purple" /> {t("Projection")}</span>
@@ -462,6 +591,45 @@ export default function AIPredictionPage() {
                   </motion.div>
 
                 </div>
+
+                {/* Explainable AI: Model Reasoning Trail */}
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }} className="mt-6">
+                  <Card className="glass-card hover:!transform-none">
+                    <CardHeader className="pb-3 border-b border-border/50 bg-muted/10">
+                      <CardTitle className="text-lg font-heading flex items-center gap-2">
+                        <Search className="h-5 w-5 text-brand-purple" /> {t("Model Reasoning Trail")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="flex flex-col space-y-4">
+                        {[
+                          { step: 1, label: "Baseline Data Ingestion", desc: `Loaded ${meta?.trainingMonths || 60} months of historical ${crimeType} data for ${district}.`, icon: Database },
+                          { step: 2, label: "Spatial & Trend Weighting", desc: `Applied recent velocity trend factor (${result.factors.trend.toFixed(2)}x) and district spatial risk (${result.factors.district.toFixed(2)}x).`, icon: MapPin },
+                          { step: 3, label: "Environmental Multipliers", desc: `Adjusted for seasonal bias and weather patterns (${result.factors.environmental.toFixed(2)}x).`, icon: CloudRain },
+                          { step: 4, label: `${modelType} Engine Forecast`, desc: `Ran ${modelType} architecture to generate future horizon with ${result.confidence}% confidence bounds.`, icon: Network },
+                        ].map((s, i, arr) => (
+                          <div key={s.step} className="flex gap-4 items-start">
+                            <div className="flex flex-col items-center">
+                              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white z-10 flex-shrink-0" style={{ background: `linear-gradient(135deg, var(--brand-purple), var(--brand-blue))` }}>
+                                {s.step}
+                              </div>
+                              {i < arr.length - 1 && (
+                                <div className="w-px h-full bg-border my-1 min-h-[20px]" style={{ background: `linear-gradient(var(--brand-purple)50, transparent)` }} />
+                              )}
+                            </div>
+                            <div className="pb-2 flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <s.icon className="h-4 w-4 text-brand-teal" />
+                                <span className="font-semibold text-foreground leading-snug">{t(s.label)}</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground leading-relaxed">{t(s.desc)}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
