@@ -3,7 +3,9 @@
   "build_command": "npm run build",
   "build_path": ".",
   "stack": "node20",
-  "env_variables": {},
+  "env_variables": {
+    "NEXT_PUBLIC_API_URL": "https://crimerakshak-backend-50044226161.development.catalystappsail.in/api/v1"
+  },
   "memory": 512,
   "scripts": {}
 }
