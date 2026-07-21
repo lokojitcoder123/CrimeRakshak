@@ -1,6 +1,6 @@
 {
   "command": "node .next/standalone/server.js",
-  "build_command": "npm run build",
+  "build_command": "npm run build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/",
   "build_path": ".",
   "stack": "node20",
   "env_variables": {
