@@ -1,5 +1,5 @@
 {
-  "command": "npx next start -p $PORT",
+  "command": "node .next/standalone/server.js",
   "build_command": "npm run build",
   "build_path": ".",
   "stack": "node20",
