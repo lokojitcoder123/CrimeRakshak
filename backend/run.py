@@ -30,20 +30,20 @@ if os.path.exists(user_site) and user_site not in sys.path:
 try:
     import uvicorn
     import fastapi
-    print("✓ FastAPI & Uvicorn imported successfully")
+    print("[OK] FastAPI & Uvicorn imported successfully")
     sys.stdout.flush()
 except Exception as exc:
-    print(f"✗ CRITICAL IMPORT ERROR (fastapi/uvicorn): {exc}", file=sys.stderr)
+    print(f"[ERROR] CRITICAL IMPORT ERROR (fastapi/uvicorn): {exc}", file=sys.stderr)
     traceback.print_exc()
     sys.stderr.flush()
     sys.exit(1)
 
 try:
     from app.main import app
-    print("✓ app.main imported successfully")
+    print("[OK] app.main imported successfully")
     sys.stdout.flush()
 except Exception as exc:
-    print(f"✗ WARN: Failed to import app.main, mounting fallback app: {exc}", file=sys.stderr)
+    print(f"[WARN] Failed to import app.main, mounting fallback app: {exc}", file=sys.stderr)
     traceback.print_exc()
     sys.stderr.flush()
     app = fastapi.FastAPI()

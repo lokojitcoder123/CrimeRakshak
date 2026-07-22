@@ -3,10 +3,6 @@
     {
       "name": "crimerakshak-backend",
       "source": "backend"
-    },
-    {
-      "name": "crimerakshak-frontend",
-      "source": "frontend"
     }
   ]
 }
